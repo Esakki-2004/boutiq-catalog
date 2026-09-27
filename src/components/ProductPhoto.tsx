@@ -9,13 +9,13 @@ import { useEffect, useState } from "react";
  */
 export function ProductPhoto({
   photoId,
-  subcategory,
+  category,
   alt,
   className,
   width = 600,
 }: {
   photoId?: string;
-  subcategory: string;
+  category: string;
   alt: string;
   className?: string;
   width?: number;
@@ -33,11 +33,11 @@ export function ProductPhoto({
     return (
       <div
         className={cn(
-          "flex h-full w-full items-center justify-center bg-[#f5f7fa]",
+          "flex h-full w-full items-center justify-center bg-sand",
           className,
         )}
       >
-        <GarmentArt subcategory={subcategory} className="h-2/3 w-2/3" />
+        <GarmentArt category={category} className="h-2/3 w-2/3" />
       </div>
     );
   }

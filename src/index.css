@@ -40,63 +40,78 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --color-fk-header: var(--fk-header);
-  --color-fk-header-soft: var(--fk-header-soft);
-  --color-fk-accent: var(--fk-accent);
-  --color-fk-green: var(--fk-green);
-  --color-fk-ink: var(--fk-ink);
-  --color-fk-line: var(--fk-line);
-  --color-fk-soft: var(--fk-soft);
-  --font-display: "Inter", system-ui, sans-serif;
+  --font-serif: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+  --font-sans: "Jost", "Segoe UI", system-ui, sans-serif;
 }
 
-/* Boutiq — Flipkart-style commerce theme */
+/* Boutique palette tokens — registered so every utility variant
+   (text-, bg-, border-, fill-, with opacity modifiers) is generated. */
+@theme inline {
+  --color-maroon: var(--btq-maroon);
+  --color-maroon-deep: var(--btq-maroon-deep);
+  --color-gold: var(--btq-gold);
+  --color-gold-soft: var(--btq-gold-soft);
+  --color-terra: var(--btq-terra);
+  --color-ivory: var(--btq-ivory);
+  --color-sand: var(--btq-sand);
+  --color-ink: var(--btq-ink);
+  --color-line: var(--btq-line);
+}
+
+/*
+ * Boutiq — an elegant Indian women's-wear boutique.
+ * Palette: warm ivory paper, deep maroon ink, antique-gold accents,
+ * terracotta highlights. Serif display type (Cormorant Garamond) over a
+ * quiet geometric sans (Jost). Flat, editorial, airy — no marketplace blue.
+ */
 :root {
-  --radius: 0.25rem;
+  --radius: 0.125rem;
 
-  --background: #f1f3f6; /* Flipkart page grey */
-  --foreground: #212121;
+  --background: #faf7f2; /* warm ivory paper */
+  --foreground: #2f2418; /* deep espresso brown */
   --card: #ffffff;
-  --card-foreground: #212121;
+  --card-foreground: #2f2418;
   --popover: #ffffff;
-  --popover-foreground: #212121;
+  --popover-foreground: #2f2418;
 
-  --primary: #2874f0; /* Flipkart blue */
-  --primary-foreground: #ffffff;
-  --secondary: #f0f5ff; /* Plus-zone pale blue */
-  --secondary-foreground: #2874f0;
-  --muted: #f5f5f5;
-  --muted-foreground: #878787;
-  --accent: #fff8e1; /* yellow-tinted hover wash */
-  --accent-foreground: #212121;
-  --destructive: #ff5252;
-  --border: #e0e0e0;
-  --input: #f0f0f0;
-  --ring: #2874f0;
+  --primary: #7a2e2e; /* deep maroon */
+  --primary-foreground: #fdf9f3;
+  --secondary: #f1e6d8; /* sand */
+  --secondary-foreground: #7a2e2e;
+  --muted: #f6f1e8; /* pale sand */
+  --muted-foreground: #8a7a66; /* warm taupe */
+  --accent: #f3e3cd; /* soft gold wash */
+  --accent-foreground: #6d2a1f;
+  --destructive: #b3402e;
+  --border: #e8dfd1;
+  --input: #eee7da;
+  --ring: #7a2e2e;
 
-  --chart-1: #2874f0;
-  --chart-2: #388e3c;
-  --chart-3: #ff9f00;
-  --chart-4: #c11a79;
-  --chart-5: #6739b7;
+  --chart-1: #7a2e2e;
+  --chart-2: #b98a2f;
+  --chart-3: #b3402e;
+  --chart-4: #6b5d4a;
+  --chart-5: #a86a3d;
 
   --sidebar: #ffffff;
-  --sidebar-foreground: #212121;
-  --sidebar-primary: #2874f0;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f0f5ff;
-  --sidebar-accent-foreground: #2874f0;
-  --sidebar-border: #e0e0e0;
-  --sidebar-ring: #2874f0;
+  --sidebar-foreground: #2f2418;
+  --sidebar-primary: #7a2e2e;
+  --sidebar-primary-foreground: #fdf9f3;
+  --sidebar-accent: #f3e3cd;
+  --sidebar-accent-foreground: #6d2a1f;
+  --sidebar-border: #e8dfd1;
+  --sidebar-ring: #7a2e2e;
 
-  /* Boutiq/Flipkart custom tokens */
-  --fk-header: #2874f0; /* masthead blue */
-  --fk-header-soft: #1a4d9e; /* deeper blue for gradients/footers */
-  --fk-accent: #ffe11b; /* Flipkart yellow */
-  --fk-green: #388e3c; /* discount green */
-  --fk-ink: #212121; /* headings */
-  --fk-line: #eaeaed; /* hairline dividers */
-  --fk-soft: #f7f8fa; /* soft panel fill */
+  /* Boutique custom tokens */
+  --btq-ivory: #faf7f2;
+  --btq-maroon: #7a2e2e;
+  --btq-maroon-deep: #4a1c1c;
+  --btq-gold: #b98a2f;
+  --btq-gold-soft: #e6d3ae;
+  --btq-terra: #b3402e;
+  --btq-sand: #f1e6d8;
+  --btq-ink: #2f2418;
+  --btq-line: #e8dfd1;
 }
 
 .dark {
@@ -139,7 +154,7 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: Inter, "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+    font-family: "Jost", "Segoe UI", system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
@@ -150,34 +165,38 @@
 }
 
 @layer utilities {
-  /* Flipkart masthead blue — matches #2874f0 in :root; keep the hex here so
-     the header stays on-brand even if token debugging changes --fk-header. */
-  .bg-fk-header {
-    background-color: #2874f0;
+  .font-display {
+    font-family: "Cormorant Garamond", "Playfair Display", Georgia, serif;
   }
-  .text-fk-header {
-    color: #2874f0;
+  .font-body {
+    font-family: "Jost", "Segoe UI", system-ui, sans-serif;
   }
-  /* Flipkart yellow — matches #ffe11b in :root. */
-  .bg-fk-accent {
-    background-color: #ffe11b;
+  /* Thin editorial eyebrow label */
+  .eyebrow {
+    @apply text-[11px] font-medium uppercase tracking-[0.28em];
   }
-  .text-fk-accent {
-    color: #ffe11b;
+  /* Hairline shadow for flat cards */
+  .shadow-btq {
+    box-shadow: 0 1px 2px rgba(74, 28, 28, 0.06), 0 8px 28px rgba(74, 28, 28, 0.05);
   }
-  /* Warm gold wash for hero / sale bands */
-  .bg-fk-wash {
-    background: linear-gradient(180deg, #fff7dd 0%, #fffdf4 70%, #ffffff 100%);
+  /* Gold hairline divider with center dot */
+  .rule-gold {
+    background: linear-gradient(
+      to right,
+      transparent,
+      #b98a2f 50%,
+      transparent
+    );
   }
-  /* Thin uppercase category-bar typography */
-  .fk-cat {
-    @apply text-[13px] font-semibold uppercase tracking-[0.08em] text-white/90;
+  /* Arch-topped frame for editorial imagery */
+  .arch {
+    border-radius: 999px 999px 0 0;
   }
-  .fk-cat:hover {
-    color: #ffffff;
+  /* Slow image zoom on hover */
+  .img-zoom {
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  /* Flat commerce shadow used on white cards/bands */
-  .shadow-fk {
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  .group:hover .img-zoom {
+    transform: scale(1.05);
   }
 }

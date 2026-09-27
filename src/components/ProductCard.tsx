@@ -1,5 +1,3 @@
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { Link } from "react-router";
 import { ProductPhoto } from "./ProductPhoto";
@@ -8,20 +6,9 @@ function formatINR(value: number) {
   return `₹${value.toLocaleString("en-IN")}`;
 }
 
-function StarRating({ rating }: { rating: number }) {
-  return (
-    <span className="inline-flex items-center gap-1 rounded-sm bg-[#388e3c] px-1.5 py-0.5 text-xs font-bold text-white">
-      {rating.toFixed(1)}
-      <svg viewBox="0 0 24 24" className="size-3 fill-white" aria-hidden="true">
-        <path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6z" />
-      </svg>
-    </span>
-  );
-}
-
 /**
- * Catalogue product card — Flipkart listing style: white tile, centered
- * garment photo, brand line, green rating chip, price block with % off.
+ * Boutique product card — tall flat imagery, serif product name, quiet price
+ * line. Hover: slow zoom and a maroon underline on the name.
  */
 export function ProductCard({
   product,
@@ -30,66 +17,36 @@ export function ProductCard({
   product: Doc<"products">;
   className?: string;
 }) {
-  const discount = Math.round(((product.mrp - product.price) / product.mrp) * 100);
-
   return (
-    <Link
-      to={`/product/${product._id}`}
-      className={cn(
-        "group flex h-full flex-col border border-transparent bg-card p-3 transition-shadow hover:shadow-fk hover:outline hover:outline-border/60",
-        className,
-      )}
-    >
-      <div className="relative mb-3 aspect-[3/4] w-full overflow-hidden bg-[#f5f7fa]">
+    <Link to={`/product/${product._id}`} className={`group block ${className ?? ""}`}>
+      <div className="relative aspect-[3/4] w-full overflow-hidden bg-sand">
         <ProductPhoto
           photoId={product.photoId}
-          subcategory={product.subcategory}
+          category={product.category}
           alt={product.name}
-          width={500}
-          className="transition-transform duration-300 group-hover:scale-[1.03]"
+          width={520}
+          className="img-zoom"
         />
-        {discount >= 40 && (
-          <span className="absolute left-0 top-2 bg-fk-accent px-1.5 py-0.5 text-[11px] font-semibold text-fk-ink">
-            {discount}% OFF
+        {product.tags.includes("new") && (
+          <span className="absolute left-3 top-3 bg-card px-2 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-maroon shadow-btq">
+            New
           </span>
         )}
       </div>
-      <div className="flex flex-1 flex-col">
-        <p className="truncate text-sm font-medium text-fk-ink">{product.brand}</p>
-        <p className="mt-0.5 line-clamp-2 min-h-9 text-xs leading-4 text-muted-foreground">
-          {product.notes}
+      <div className="pt-3.5">
+        <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+          {product.brand}
         </p>
-        <div className="mt-2">
-          <StarRating rating={product.rating} />
-          <span className="ml-1.5 align-middle text-xs text-muted-foreground">
-            ({product.ratingCount.toLocaleString("en-IN")})
+        <p className="mt-1 font-display text-lg leading-snug text-ink decoration-maroon/40 decoration-1 underline-offset-4 group-hover:underline">
+          {product.name}
+        </p>
+        <p className="mt-1.5 flex items-baseline gap-2 font-body text-sm">
+          <span className="font-medium text-ink">{formatINR(product.price)}</span>
+          <span className="text-xs text-muted-foreground line-through">
+            {formatINR(product.mrp)}
           </span>
-        </div>
-        <div className="mt-auto pt-2">
-          <div className="flex flex-wrap items-baseline gap-x-2">
-            <span className="text-base font-bold text-fk-ink">
-              {formatINR(product.price)}
-            </span>
-            <span className="text-xs text-muted-foreground line-through">
-              {formatINR(product.mrp)}
-            </span>
-            <span className="text-xs font-semibold text-fk-green">
-              {discount}% off
-            </span>
-          </div>
-          <p className="mt-1 text-[11px] font-medium text-fk-green">
-            Free delivery
-          </p>
-        </div>
+        </p>
       </div>
-      {product.tags.includes("bestseller") && (
-        <Badge
-          variant="outline"
-          className="mt-2 w-fit border-border/70 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground"
-        >
-          Bestseller
-        </Badge>
-      )}
     </Link>
   );
 }

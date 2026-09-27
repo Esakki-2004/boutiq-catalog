@@ -126,13 +126,13 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                       className="mb-4 mt-4 cursor-pointer"
                       onClick={() => navigate("/")}
                     >
-                      <span className="text-3xl font-bold italic tracking-tight text-fk-header">
+                      <span className="font-display text-4xl font-semibold tracking-wide text-maroon">
                         Boutiq
                       </span>
                     </button>
                   </div>
-                <CardTitle className="text-xl">Sign in to Boutiq</CardTitle>
-                <CardDescription>
+                <CardTitle className="font-display text-2xl">Sign in to Boutiq</CardTitle>
+                <CardDescription className="font-body">
                   Enter your email to log in or sign up
                 </CardDescription>
               </CardHeader>
@@ -278,8 +278,8 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
             </>
           )}
 
-          <div className="rounded-b-lg border-t bg-fk-wash px-6 py-4 text-center text-xs text-muted-foreground">
-            Boutiq — Style that ships fast.
+          <div className="rounded-b-lg border-t bg-ivory px-6 py-4 text-center font-body text-xs text-muted-foreground">
+            Boutiq — woven slowly, worn everyday.
           </div>
         </Card>
         </div>

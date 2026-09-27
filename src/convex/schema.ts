@@ -16,11 +16,12 @@ export const roleValidator = v.union(
 );
 export type Role = Infer<typeof roleValidator>;
 
-/** Product categories for the boutique catalogue. */
+/** Product categories for the boutique — Indian women's wear. */
 export const categoryValidator = v.union(
-  v.literal("women"),
-  v.literal("men"),
-  v.literal("kids"),
+  v.literal("kurtas"),
+  v.literal("sarees"),
+  v.literal("sets"),
+  v.literal("dresses"),
 );
 export type Category = Infer<typeof categoryValidator>;
 

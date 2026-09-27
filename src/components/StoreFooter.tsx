@@ -1,60 +1,59 @@
 const COLUMNS: { title: string; links: string[] }[] = [
   {
-    title: "About",
-    links: ["Contact Us", "About Us", "Careers", "Boutiq Stories", "Press"],
+    title: "The Atelier",
+    links: ["Our Craft", "Fabrics", "Sizing Guide", "Journal"],
   },
   {
-    title: "Help",
-    links: ["Payments", "Shipping", "Cancellation & Returns", "FAQ"],
+    title: "Care",
+    links: ["Shipping", "Returns & Exchange", "Fabric Care", "Contact"],
   },
   {
-    title: "Consumer Policy",
-    links: ["Cancellation & Returns", "Terms Of Use", "Security", "Privacy", "Sitemap"],
-  },
-  {
-    title: "Shop",
-    links: ["Women", "Men", "Kids", "New Arrivals", "Offers"],
+    title: "Connect",
+    links: ["Instagram", "Pinterest", "Stockists", "Newsletter"],
   },
 ];
 
 /**
- * Storefront footer — Flipkart-style: deep blue band with pale link columns,
- * divider, descriptor row and copyright line.
+ * Boutique footer — deep maroon with pale gold links, serif wordmark and a
+ * hand-finished sign-off line.
  */
 export function StoreFooter() {
   return (
-    <footer className="mt-10 bg-fk-header-soft text-white">
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:grid-cols-2 lg:grid-cols-4 lg:px-6">
-        {COLUMNS.map((col) => (
-          <div key={col.title}>
-            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-white/50">
-              {col.title}
+    <footer className="mt-16 bg-maroon-deep text-[#f0e6d8]">
+      <div className="mx-auto max-w-7xl px-4 py-14 lg:px-8">
+        <div className="grid gap-10 lg:grid-cols-5">
+          <div className="lg:col-span-2">
+            <p className="font-display text-3xl font-semibold text-[#faf7f2]">
+              Boutiq
             </p>
-            <ul className="space-y-2">
-              {col.links.map((link) => (
-                <li key={link}>
-                  <span className="cursor-default text-sm text-white/85 transition-colors hover:text-white">
-                    {link}
-                  </span>
-                </li>
-              ))}
-            </ul>
+            <p className="mt-3 max-w-xs font-body text-sm leading-6 text-[#f0e6d8]/75">
+              A small atelier for Indian women&apos;s wear — cottons, silks and
+              chanderi cut in small batches, finished by hand.
+            </p>
+            <div className="rule-gold mt-6 h-px w-20 opacity-70" />
           </div>
-        ))}
+          {COLUMNS.map((col) => (
+            <div key={col.title}>
+              <p className="mb-4 text-[11px] font-medium uppercase tracking-[0.28em] text-[#e6d3ae]/70">
+                {col.title}
+              </p>
+              <ul className="space-y-2.5">
+                {col.links.map((link) => (
+                  <li key={link}>
+                    <span className="cursor-default font-body text-sm text-[#f0e6d8]/80 transition-colors hover:text-[#faf7f2]">
+                      {link}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
       </div>
-      <div className="border-t border-white/15">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 py-4 text-xs text-white/70 sm:flex-row lg:px-6">
-          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1">
-            <span>Become a Seller</span>
-            <span>Advertise</span>
-            <span>Gift Cards</span>
-            <span>Help Center</span>
-          </div>
-          <span>© 2007–2026 Boutiq.com</span>
-          <div className="flex items-center gap-1">
-            <span className="text-lg font-bold italic text-fk-accent">B</span>
-            <span>Explore Plus</span>
-          </div>
+      <div className="border-t border-white/10">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 py-5 font-body text-xs text-[#f0e6d8]/60 sm:flex-row lg:px-8">
+          <span>© 2024–2026 Boutiq</span>
+          <span>Crafted in India, with love</span>
         </div>
       </div>
     </footer>

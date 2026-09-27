@@ -2,19 +2,11 @@ import { ProductPhoto } from "@/components/ProductPhoto";
 import { ProductCard } from "@/components/ProductCard";
 import { StoreHeader } from "@/components/StoreHeader";
 import { StoreFooter } from "@/components/StoreFooter";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { api } from "@/convex/_generated/api";
 import type { Doc, Id } from "@/convex/_generated/dataModel";
 import { cn } from "@/lib/utils";
 import { useQuery } from "convex/react";
-import {
-  Banknote,
-  BadgeCheck,
-  ChevronRight,
-  RefreshCcw,
-  Truck,
-} from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 
@@ -22,47 +14,13 @@ function formatINR(value: number) {
   return `₹${value.toLocaleString("en-IN")}`;
 }
 
-function StarRating({ rating, large = false }: { rating: number; large?: boolean }) {
-  return (
-    <span
-      className={cn(
-        "inline-flex items-center gap-1 rounded-sm bg-[#388e3c] font-bold text-white",
-        large ? "px-2 py-1 text-sm" : "px-1.5 py-0.5 text-xs",
-      )}
-    >
-      {rating.toFixed(1)}
-      <svg viewBox="0 0 24 24" className={large ? "size-3.5 fill-white" : "size-3 fill-white"} aria-hidden="true">
-        <path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6z" />
-      </svg>
-    </span>
-  );
-}
-
-function PriceBlock({ product }: { product: Doc<"products"> }) {
-  const discount = Math.round(((product.mrp - product.price) / product.mrp) * 100);
-  return (
-    <div className="mt-3">
-      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <span className="text-2xl font-bold text-fk-ink">
-          {formatINR(product.price)}
-        </span>
-        <span className="text-sm text-muted-foreground line-through">
-          {formatINR(product.mrp)}
-        </span>
-        <span className="text-sm font-bold text-fk-green">{discount}% off</span>
-      </div>
-      <p className="mt-1 text-xs text-muted-foreground">
-        Inclusive of all taxes · Extra {discount}% off applied
-      </p>
-    </div>
-  );
-}
-
 function DetailRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex gap-4 text-sm">
-      <span className="w-24 shrink-0 text-muted-foreground">{label}</span>
-      <span className="text-fk-ink">{value}</span>
+    <div className="flex gap-6 border-b border-line py-3 font-body text-sm last:border-0">
+      <span className="w-28 shrink-0 text-[12px] uppercase tracking-[0.14em] text-muted-foreground">
+        {label}
+      </span>
+      <span className="text-ink">{value}</span>
     </div>
   );
 }
@@ -74,7 +32,7 @@ export default function ProductDetail() {
   });
   const similar = useQuery(
     api.products.similar,
-    product ? { id: product._id, limit: 5 } : "skip",
+    product ? { id: product._id, limit: 4 } : "skip",
   );
 
   const [size, setSize] = useState<string | null>(null);
@@ -87,10 +45,12 @@ export default function ProductDetail() {
 
   if (product === undefined) {
     return (
-      <div className="flex min-h-screen flex-col bg-background">
+      <div className="flex min-h-screen flex-col bg-ivory">
         <StoreHeader />
         <main className="mx-auto flex w-full max-w-7xl flex-1 items-center justify-center px-4">
-          <p className="text-sm text-muted-foreground">Loading product…</p>
+          <p className="font-body text-sm text-muted-foreground">
+            Loading piece…
+          </p>
         </main>
         <StoreFooter />
       </div>
@@ -99,14 +59,17 @@ export default function ProductDetail() {
 
   if (product === null) {
     return (
-      <div className="flex min-h-screen flex-col bg-background">
+      <div className="flex min-h-screen flex-col bg-ivory">
         <StoreHeader />
         <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col items-center justify-center gap-3 px-4 text-center">
-          <p className="text-lg font-semibold text-fk-ink">
-            This product isn&apos;t available.
+          <p className="font-display text-3xl text-ink">
+            This piece has found a home.
           </p>
-          <Link to="/shop" className="text-sm font-semibold text-fk-header hover:underline">
-            Back to the catalogue
+          <Link
+            to="/shop"
+            className="font-body text-sm text-maroon underline underline-offset-4 hover:text-maroon-deep"
+          >
+            Return to the collection
           </Link>
         </main>
         <StoreFooter />
@@ -117,119 +80,95 @@ export default function ProductDetail() {
   const discount = Math.round(((product.mrp - product.price) / product.mrp) * 100);
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen flex-col bg-ivory">
       <StoreHeader />
 
-      <main className="mx-auto w-full max-w-7xl flex-1 px-0 py-4 lg:px-6">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 lg:px-8">
         {/* Breadcrumb */}
         <nav
           aria-label="Breadcrumb"
-          className="flex flex-wrap items-center gap-1 px-4 text-xs text-muted-foreground lg:px-0"
+          className="flex flex-wrap items-center gap-1 font-body text-xs text-muted-foreground"
         >
-          <Link to="/" className="hover:text-fk-header">Home</Link>
+          <Link to="/" className="hover:text-maroon">Home</Link>
           <ChevronRight className="size-3" />
           <Link
             to={`/shop?category=${product.category}`}
-            className="capitalize hover:text-fk-header"
+            className="capitalize hover:text-maroon"
           >
             {product.category}
           </Link>
           <ChevronRight className="size-3" />
-          <Link
-            to={`/shop?category=${product.category}&subcategory=${encodeURIComponent(product.subcategory)}`}
-            className="hover:text-fk-header"
-          >
-            {product.subcategory}
-          </Link>
-          <ChevronRight className="size-3" />
-          <span className="text-fk-ink">{product.name}</span>
+          <span className="text-ink">{product.name}</span>
         </nav>
 
-        <div className="mt-3 flex flex-col gap-4 lg:flex-row">
-          {/* Image panel */}
-          <div className="w-full shrink-0 self-start bg-card p-4 shadow-fk lg:sticky lg:top-32 lg:w-[42%]">
-            <div className="aspect-[3/4] w-full overflow-hidden bg-[#f5f7fa]">
+        <div className="mt-6 flex flex-col gap-10 lg:flex-row lg:gap-14">
+          {/* Image */}
+          <div className="w-full shrink-0 lg:w-[46%]">
+            <div className="aspect-[3/4] w-full overflow-hidden border border-line bg-sand">
               <ProductPhoto
                 photoId={product.photoId}
-                subcategory={product.subcategory}
+                category={product.category}
                 alt={product.name}
                 width={900}
               />
             </div>
-            {discount >= 40 && (
-              <p className="mt-3 inline-block bg-fk-accent px-2 py-1 text-xs font-bold text-fk-ink">
-                {discount}% OFF — Big Boutique Days
-              </p>
-            )}
           </div>
 
-          {/* Details panel */}
-          <div className="min-w-0 flex-1 bg-card p-5 shadow-fk sm:p-6">
-            <p className="text-base text-muted-foreground">{product.brand}</p>
-            <h1 className="mt-1 text-xl font-semibold text-fk-ink sm:text-2xl">
+          {/* Details */}
+          <div className="min-w-0 flex-1">
+            <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-gold">
+              {product.brand}
+            </p>
+            <h1 className="mt-2 font-display text-3xl font-semibold leading-tight text-ink sm:text-4xl">
               {product.name}
             </h1>
 
-            <div className="mt-2 flex flex-wrap items-center gap-2">
-              <StarRating rating={product.rating} large />
-              <span className="text-sm text-muted-foreground">
-                {product.ratingCount.toLocaleString("en-IN")} ratings
+            <div className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <span className="font-body text-xl font-medium text-ink">
+                {formatINR(product.price)}
               </span>
-              {product.tags.includes("bestseller") && (
-                <span className="bg-secondary px-2 py-0.5 text-xs font-bold text-fk-header">
-                  Bestseller
+              <span className="font-body text-sm text-muted-foreground line-through">
+                {formatINR(product.mrp)}
+              </span>
+              {discount >= 20 && (
+                <span className="font-body text-sm font-medium text-terra">
+                  {discount}% off
                 </span>
               )}
             </div>
+            <p className="mt-1 font-body text-xs text-muted-foreground">
+              Inclusive of all taxes
+            </p>
 
-            <Separator className="my-4" />
+            <div className="rule-gold my-6 h-px" />
 
-            <PriceBlock product={product} />
+            {/* Rating line */}
+            <p className="flex items-center gap-2 font-body text-sm text-muted-foreground">
+              <svg viewBox="0 0 24 24" className="size-4 fill-gold" aria-hidden="true">
+                <path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6z" />
+              </svg>
+              <span className="font-medium text-ink">{product.rating.toFixed(1)}</span>
+              · {product.ratingCount.toLocaleString("en-IN")} reviews
+            </p>
 
-            {product.sizes.length > 1 && (
-              <div className="mt-5">
-                <p className="mb-2 text-sm font-semibold text-fk-ink">
-                  Select size
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {product.sizes.map((s) => (
-                    <button
-                      key={s}
-                      type="button"
-                      onClick={() => setSize(size === s ? null : s)}
-                      className={cn(
-                        "flex h-9 min-w-11 items-center justify-center border px-3 text-sm font-medium transition-colors",
-                        size === s
-                          ? "border-fk-header bg-secondary text-fk-header"
-                          : "border-border bg-white text-fk-ink hover:border-fk-header/60",
-                      )}
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
+            {/* Colours */}
             {product.colors.length > 0 && (
-              <div className="mt-5">
-                <p className="mb-2 text-sm font-semibold text-fk-ink">
-                  Colour:{" "}
-                  <span className="font-normal text-muted-foreground">
-                    {color ?? product.colors[0]}
-                  </span>
+              <div className="mt-6">
+                <p className="font-body text-[12px] uppercase tracking-[0.18em] text-muted-foreground">
+                  Colour —{" "}
+                  <span className="text-ink">{color ?? product.colors[0]}</span>
                 </p>
-                <div className="flex flex-wrap gap-2">
+                <div className="mt-2.5 flex flex-wrap gap-2">
                   {product.colors.map((c) => (
                     <button
                       key={c}
                       type="button"
                       onClick={() => setColor(color === c ? null : c)}
                       className={cn(
-                        "border px-3 py-1.5 text-sm transition-colors",
+                        "border px-4 py-2 font-body text-sm transition-colors",
                         color === c
-                          ? "border-fk-header bg-secondary font-medium text-fk-header"
-                          : "border-border bg-white text-fk-ink hover:border-fk-header/60",
+                          ? "border-maroon bg-maroon text-primary-foreground"
+                          : "border-line bg-card text-ink hover:border-maroon/50",
                       )}
                     >
                       {c}
@@ -239,68 +178,104 @@ export default function ProductDetail() {
               </div>
             )}
 
-            <Separator className="my-5" />
-
-            <p className="text-sm font-semibold uppercase tracking-wide text-fk-ink">
-              Product details
-            </p>
-            <div className="mt-3 space-y-2">
-              <DetailRow label="Description" value={product.notes} />
-              <DetailRow
-                label="Category"
-                value={`${product.category} · ${product.subcategory}`}
-              />
-              <DetailRow label="Fabric care" value="Machine wash as per label" />
-              <DetailRow label="Country of origin" value="India" />
-            </div>
-
-            <Separator className="my-5" />
-
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              {[
-                { icon: Truck, label: "Free delivery" },
-                { icon: RefreshCcw, label: "7-day returns" },
-                { icon: Banknote, label: "Cash on delivery" },
-                { icon: BadgeCheck, label: "100% genuine" },
-              ].map(({ icon: Icon, label }) => (
-                <div
-                  key={label}
-                  className="flex flex-col items-center gap-1.5 border border-fk-line p-3 text-center"
-                >
-                  <Icon className="size-5 text-fk-header" />
-                  <span className="text-xs font-medium text-fk-ink">{label}</span>
+            {/* Sizes */}
+            {product.sizes.length > 1 && (
+              <div className="mt-6">
+                <div className="flex items-center justify-between">
+                  <p className="font-body text-[12px] uppercase tracking-[0.18em] text-muted-foreground">
+                    Size
+                  </p>
+                  <button
+                    type="button"
+                    className="font-body text-xs text-maroon underline underline-offset-4"
+                  >
+                    Size guide
+                  </button>
                 </div>
-              ))}
-            </div>
+                <div className="mt-2.5 flex flex-wrap gap-2">
+                  {product.sizes.map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => setSize(size === s ? null : s)}
+                      className={cn(
+                        "flex h-10 min-w-11 items-center justify-center border px-3 font-body text-sm transition-colors",
+                        size === s
+                          ? "border-maroon bg-maroon text-primary-foreground"
+                          : "border-line bg-card text-ink hover:border-maroon/50",
+                      )}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <Button
-                className="h-12 flex-1 rounded-sm bg-fk-accent text-base font-bold text-fk-ink shadow-sm hover:bg-fk-accent/90"
+            {/* CTAs */}
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <button
+                className="flex-1 bg-maroon py-4 font-body text-sm font-medium uppercase tracking-[0.18em] text-primary-foreground transition-colors hover:bg-maroon-deep"
                 title="Cart and checkout arrive in a future version"
               >
-                Add to Cart
-              </Button>
-              <Button
-                className="h-12 flex-1 rounded-sm bg-fk-header text-base font-semibold hover:bg-fk-header-soft"
+                Add to Bag
+              </button>
+              <button
+                className="flex-1 border border-maroon py-4 font-body text-sm font-medium uppercase tracking-[0.18em] text-maroon transition-colors hover:bg-maroon hover:text-primary-foreground"
                 title="Cart and checkout arrive in a future version"
               >
                 Buy Now
-              </Button>
+              </button>
             </div>
-            <p className="mt-2 text-center text-xs text-muted-foreground sm:text-left">
+            <p className="mt-2 font-body text-xs text-muted-foreground">
               Cart &amp; checkout are planned for the next version of Boutiq.
             </p>
+
+            {/* Perks */}
+            <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-3 border-t border-line pt-6 sm:grid-cols-3">
+              {[
+                "Free shipping over ₹2,000",
+                "7-day easy returns",
+                "Hand-finished in small batch",
+              ].map((perk) => (
+                <p
+                  key={perk}
+                  className="flex items-start gap-2 font-body text-[13px] text-muted-foreground"
+                >
+                  <span className="mt-1.5 size-1 shrink-0 rounded-full bg-gold" />
+                  {perk}
+                </p>
+              ))}
+            </div>
+
+            {/* Details */}
+            <div className="mt-8">
+              <p className="font-display text-2xl text-ink">The details</p>
+              <div className="mt-3">
+                <DetailRow label="Description" value={product.notes} />
+                <DetailRow
+                  label="Silhouette"
+                  value={`${product.subcategory} · ${product.category}`}
+                />
+                <DetailRow label="Care" value="Dry clean or gentle hand wash" />
+                <DetailRow label="Made in" value="India" />
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Similar products */}
         {similar && similar.length > 0 && (
-          <section className="mt-4 bg-card shadow-fk">
-            <div className="border-b border-fk-line px-4 py-3 lg:px-6">
-              <h2 className="text-lg font-semibold text-fk-ink">Similar products</h2>
+          <section className="mt-16">
+            <div className="mb-8 text-center">
+              <p className="eyebrow text-gold">Styled with</p>
+              <h2 className="mt-2 font-display text-3xl font-semibold text-ink">
+                You may also love
+              </h2>
+              <div className="rule-gold mx-auto mt-4 h-px w-24" />
             </div>
-            <div className="grid grid-cols-2 gap-px bg-fk-line sm:grid-cols-3 lg:grid-cols-5">
-              {similar.map((p) => (
+            <div className="grid grid-cols-2 gap-x-5 gap-y-10 lg:grid-cols-4">
+              {similar.map((p: Doc<"products">) => (
                 <ProductCard key={p._id} product={p} />
               ))}
             </div>

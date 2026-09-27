@@ -9,28 +9,29 @@ import { cn } from "@/lib/utils";
 import { useQuery } from "convex/react";
 import { ChevronDown, Search, X } from "lucide-react";
 import { useMemo, useState } from "react";
-import { Link, useSearchParams } from "react-router";
+import { useSearchParams } from "react-router";
 
 const CATEGORIES = [
-  { id: "women", label: "Women" },
-  { id: "men", label: "Men" },
-  { id: "kids", label: "Kids" },
+  { id: "kurtas", label: "Kurtas & Kurtis" },
+  { id: "sarees", label: "Sarees" },
+  { id: "sets", label: "Co-ord Sets" },
+  { id: "dresses", label: "Dresses" },
 ] as const;
 
 const SORTS = [
-  { id: "relevance", label: "Popularity" },
-  { id: "priceAsc", label: "Price -- Low to High" },
-  { id: "priceDesc", label: "Price -- High to Low" },
-  { id: "newest", label: "Newest First" },
-  { id: "rating", label: "Customer Rating" },
+  { id: "relevance", label: "Featured" },
+  { id: "priceAsc", label: "Price — Low to High" },
+  { id: "priceDesc", label: "Price — High to Low" },
+  { id: "newest", label: "New Arrivals" },
+  { id: "rating", label: "Most Loved" },
 ] as const;
 
 const PRICE_BANDS = [
   { id: "all", label: "All prices", min: 0, max: Number.POSITIVE_INFINITY },
-  { id: "under500", label: "Under ₹500", min: 0, max: 499 },
-  { id: "500to1000", label: "₹500 – ₹1000", min: 500, max: 1000 },
-  { id: "1000to2000", label: "₹1001 – ₹2000", min: 1001, max: 2000 },
-  { id: "over2000", label: "Over ₹2000", min: 2001, max: Number.POSITIVE_INFINITY },
+  { id: "under2500", label: "Under ₹2,500", min: 0, max: 2499 },
+  { id: "2500to4000", label: "₹2,500 – ₹4,000", min: 2500, max: 4000 },
+  { id: "4000to6000", label: "₹4,000 – ₹6,000", min: 4001, max: 6000 },
+  { id: "over6000", label: "Above ₹6,000", min: 6001, max: Number.POSITIVE_INFINITY },
 ] as const;
 
 type SortId = (typeof SORTS)[number]["id"];
@@ -46,11 +47,11 @@ function FilterSection({
 }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="border-b border-fk-line py-3">
+    <div className="border-b border-line py-4">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex w-full items-center justify-between text-sm font-semibold uppercase tracking-wide text-fk-ink"
+        className="flex w-full items-center justify-between font-body text-[13px] font-medium uppercase tracking-[0.18em] text-ink"
       >
         {title}
         <ChevronDown
@@ -75,20 +76,20 @@ export default function Shop() {
   const [searchInput, setSearchInput] = useState(qParam);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
+  const cat =
+    categoryParam === "kurtas" ||
+    categoryParam === "sarees" ||
+    categoryParam === "sets" ||
+    categoryParam === "dresses"
+      ? categoryParam
+      : undefined;
+
   const catalogue = useQuery(api.products.list, {
-    category:
-      categoryParam === "women" || categoryParam === "men" || categoryParam === "kids"
-        ? categoryParam
-        : undefined,
+    category: cat,
     subcategory: subcategoryParam ?? undefined,
     search: qParam || undefined,
   });
-  const facetData = useQuery(api.products.facets, {
-    category:
-      categoryParam === "women" || categoryParam === "men" || categoryParam === "kids"
-        ? categoryParam
-        : undefined,
-  });
+  const facetData = useQuery(api.products.facets, { category: cat });
 
   const items = useMemo(() => {
     const all = catalogue?.items ?? [];
@@ -98,13 +99,14 @@ export default function Shop() {
       .filter((p) => p.rating >= minRatingParam);
   }, [catalogue?.items, priceParam, minRatingParam]);
 
-  // Sorting handled client-side over the small curated catalogue so the price
+  // Sorting happens client-side over the small curated catalogue so the price
   // and rating filters and the sort dropdown stay perfectly in sync.
   const sorted = useMemo(() => {
     const arr = [...items];
     if (sortParam === "priceAsc") arr.sort((a, b) => a.price - b.price);
     else if (sortParam === "priceDesc") arr.sort((a, b) => b.price - a.price);
-    else if (sortParam === "newest") arr.sort((a, b) => b._creationTime - a._creationTime);
+    else if (sortParam === "newest")
+      arr.sort((a, b) => b._creationTime - a._creationTime);
     else if (sortParam === "rating")
       arr.sort((a, b) => b.rating - a.rating || b.ratingCount - a.ratingCount);
     else arr.sort((a, b) => b.ratingCount - a.ratingCount);
@@ -126,13 +128,13 @@ export default function Shop() {
   }
 
   function heading() {
-    if (qParam) return `Results for "${qParam}"`;
+    if (qParam) return `“${qParam}”`;
     if (subcategoryParam) return subcategoryParam;
     if (categoryParam) {
       const c = CATEGORIES.find((c) => c.id === categoryParam);
-      return c ? c.label : "All products";
+      return c ? c.label : "The Collection";
     }
-    return "All products";
+    return "The Collection";
   }
 
   const activeFilterCount =
@@ -148,14 +150,14 @@ export default function Shop() {
   }
 
   const filterPanel = (
-    <div className="px-4 py-2">
-      <div className="flex items-center justify-between py-2">
-        <p className="text-base font-bold text-fk-ink">Filters</p>
+    <div className="px-5 py-2">
+      <div className="flex items-center justify-between py-3">
+        <p className="font-display text-xl font-semibold text-ink">Refine</p>
         {activeFilterCount > 0 && (
           <button
             type="button"
             onClick={clearAll}
-            className="text-xs font-semibold uppercase tracking-wide text-fk-header hover:underline"
+            className="text-[11px] font-medium uppercase tracking-[0.18em] text-maroon hover:underline"
           >
             Clear all
           </button>
@@ -169,11 +171,11 @@ export default function Shop() {
               id={`cat-${c.id}`}
               checked={categoryParam === c.id}
               onCheckedChange={() => toggleCategory(c.id)}
-              className="size-4 rounded-sm border-muted-foreground/50 data-[state=checked]:border-fk-header data-[state=checked]:bg-fk-header"
+              className="size-4 rounded-[2px] border-line data-[state=checked]:border-maroon data-[state=checked]:bg-maroon"
             />
             <Label
               htmlFor={`cat-${c.id}`}
-              className="cursor-pointer text-sm text-fk-ink"
+              className="cursor-pointer font-body text-sm text-ink"
             >
               {c.label}
             </Label>
@@ -181,24 +183,25 @@ export default function Shop() {
         ))}
       </FilterSection>
 
-      {categoryParam && facetData && facetData.subcategories.length > 0 && (
-        <FilterSection title="Refine">
-          {facetData!.subcategories.map((s) => (
+      {cat && facetData && facetData.subcategories.length > 0 && (
+        <FilterSection title="Silhouette">
+          {facetData.subcategories.map((s) => (
             <div key={s.label} className="flex items-center gap-2.5">
               <Checkbox
                 id={`sub-${s.label}`}
                 checked={subcategoryParam === s.label}
                 onCheckedChange={() =>
                   updateParams((sp) => {
-                    if (sp.get("subcategory") === s.label) sp.delete("subcategory");
+                    if (sp.get("subcategory") === s.label)
+                      sp.delete("subcategory");
                     else sp.set("subcategory", s.label);
                   })
                 }
-                className="size-4 rounded-sm border-muted-foreground/50 data-[state=checked]:border-fk-header data-[state=checked]:bg-fk-header"
+                className="size-4 rounded-[2px] border-line data-[state=checked]:border-maroon data-[state=checked]:bg-maroon"
               />
               <Label
                 htmlFor={`sub-${s.label}`}
-                className="flex cursor-pointer items-center gap-1.5 text-sm text-fk-ink"
+                className="flex cursor-pointer items-center gap-1.5 font-body text-sm text-ink"
               >
                 {s.label}
                 <span className="text-xs text-muted-foreground">({s.count})</span>
@@ -219,21 +222,21 @@ export default function Shop() {
               <RadioGroupItem
                 value={b.id}
                 id={`price-${b.id}`}
-                className="size-4 border-muted-foreground/50 text-fk-header"
+                className="size-4 border-line text-maroon"
               />
               <Label
                 htmlFor={`price-${b.id}`}
-                className="cursor-pointer text-sm text-fk-ink"
+                className="cursor-pointer font-body text-sm text-ink"
               >
                 {b.label}
               </Label>
             </div>
           ))}
-      </RadioGroup>
+        </RadioGroup>
       </FilterSection>
 
-      <FilterSection title="Customer Rating">
-        {[4, 3].map((r) => (
+      <FilterSection title="Loved by">
+        {[4.5, 4].map((r) => (
           <div key={r} className="flex items-center gap-2.5">
             <Checkbox
               id={`rating-${r}`}
@@ -244,17 +247,17 @@ export default function Shop() {
                   else sp.set("rating", String(r));
                 })
               }
-              className="size-4 rounded-sm border-muted-foreground/50 data-[state=checked]:border-fk-header data-[state=checked]:bg-fk-header"
+              className="size-4 rounded-[2px] border-line data-[state=checked]:border-maroon data-[state=checked]:bg-maroon"
             />
             <Label
               htmlFor={`rating-${r}`}
-              className="flex cursor-pointer items-center gap-1.5 text-sm text-fk-ink"
+              className="flex cursor-pointer items-center gap-1.5 font-body text-sm text-ink"
             >
               {r}
-              <svg viewBox="0 0 24 24" className="size-3.5 fill-fk-accent" aria-hidden="true">
+              <svg viewBox="0 0 24 24" className="size-3 fill-gold" aria-hidden="true">
                 <path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6z" />
               </svg>
-              <span className="text-muted-foreground">&amp; above</span>
+              <span className="text-muted-foreground">&amp; up</span>
             </Label>
           </div>
         ))}
@@ -263,47 +266,56 @@ export default function Shop() {
   );
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen flex-col bg-ivory">
       <StoreHeader />
 
-      <main className="mx-auto w-full max-w-7xl flex-1 px-0 py-4 lg:px-6">
-        <div className="flex gap-4">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-0 lg:px-8">
+        {/* Editorial page head */}
+        <div className="px-5 pb-6 pt-8 text-center lg:px-0">
+          <p className="eyebrow text-gold">Boutiq Atelier</p>
+          <h1 className="mt-2 font-display text-3xl font-semibold text-ink sm:text-4xl">
+            {heading()}
+          </h1>
+          <div className="rule-gold mx-auto mt-4 h-px w-24" />
+        </div>
+
+        <div className="flex gap-6">
           {/* Sidebar (desktop) */}
-          <aside className="hidden w-60 shrink-0 self-start bg-card shadow-fk lg:block">
+          <aside className="hidden w-64 shrink-0 self-start bg-card shadow-btq lg:block">
             {filterPanel}
           </aside>
 
           {/* Listing column */}
           <div className="min-w-0 flex-1">
             {/* Sort bar */}
-            <div className="flex flex-wrap items-center justify-between gap-2 bg-card px-4 py-2.5 shadow-fk">
-              <p className="text-sm text-fk-ink">
-                <span className="font-semibold">
-                  {sorted.length > 0 ? `${sorted.length} items` : "No items"}
-                </span>
-                <span className="hidden sm:inline"> in {heading()}</span>
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line bg-card/70 px-4 py-3">
+              <p className="font-body text-sm text-muted-foreground">
+                <span className="font-medium text-ink">{sorted.length}</span>{" "}
+                {sorted.length === 1 ? "piece" : "pieces"}
               </p>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={() => setMobileFiltersOpen(true)}
-                  className="flex items-center gap-1.5 border border-border px-3 py-1.5 text-sm font-medium text-fk-ink lg:hidden"
+                  className="flex items-center gap-1.5 border border-line bg-card px-3 py-1.5 font-body text-sm text-ink lg:hidden"
                 >
-                  Filters
+                  Refine
                   {activeFilterCount > 0 && (
-                    <span className="rounded-full bg-fk-header px-1.5 text-[10px] font-bold text-white">
+                    <span className="bg-maroon px-1.5 text-[10px] font-medium text-primary-foreground">
                       {activeFilterCount}
                     </span>
                   )}
                 </button>
-                <div className="flex items-center gap-2 text-sm">
-                  <span className="hidden text-muted-foreground sm:inline">Sort by</span>
+                <div className="flex items-center gap-2 font-body text-sm">
+                  <span className="hidden text-muted-foreground sm:inline">
+                    Sort
+                  </span>
                   <select
                     value={sortParam}
                     onChange={(e) =>
                       updateParams((sp) => sp.set("sort", e.target.value))
                     }
-                    className="border border-border bg-card px-2 py-1.5 text-sm font-medium text-fk-ink outline-none focus:border-fk-header"
+                    className="border border-line bg-card px-2 py-1.5 font-body text-sm text-ink outline-none focus:border-maroon"
                   >
                     {SORTS.map((s) => (
                       <option key={s.id} value={s.id}>
@@ -317,8 +329,8 @@ export default function Shop() {
 
             {/* Active search pill */}
             {qParam && (
-              <div className="mt-3 flex items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 bg-secondary px-3 py-1 text-sm font-medium text-fk-header">
+              <div className="mt-4 flex items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 bg-sand px-3 py-1 font-body text-sm text-maroon">
                   {qParam}
                   <button
                     type="button"
@@ -344,51 +356,51 @@ export default function Shop() {
                   else sp.delete("q");
                 });
               }}
-              className="relative mt-3 lg:hidden"
+              className="relative mt-4 lg:hidden"
             >
               <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <input
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                placeholder="Search products, brands…"
-                className="h-10 w-full border border-border bg-card pl-9 pr-3 text-sm text-fk-ink outline-none focus:border-fk-header"
+                placeholder="Search kurtas, sarees, sets…"
+                className="h-10 w-full border border-line bg-card pl-9 pr-3 font-body text-sm text-ink outline-none focus:border-maroon"
               />
             </form>
 
             {/* Product grid */}
             {catalogue === undefined ? (
-              <div className="grid grid-cols-2 gap-px bg-fk-line sm:grid-cols-3 xl:grid-cols-4">
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <div key={i} className="bg-card p-3">
-                    <div className="aspect-[3/4] w-full animate-pulse bg-fk-soft" />
-                    <div className="mt-3 h-4 w-2/3 animate-pulse bg-fk-soft" />
-                    <div className="mt-2 h-3 w-full animate-pulse bg-fk-soft" />
-                    <div className="mt-2 h-4 w-1/2 animate-pulse bg-fk-soft" />
+              <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i}>
+                    <div className="aspect-[3/4] w-full animate-pulse bg-sand" />
+                    <div className="mt-3 h-4 w-2/3 animate-pulse bg-sand" />
+                    <div className="mt-2 h-3 w-1/2 animate-pulse bg-sand" />
                   </div>
                 ))}
               </div>
             ) : sorted.length > 0 ? (
-              <div className="mt-3 grid grid-cols-2 gap-px bg-fk-line sm:grid-cols-3 xl:grid-cols-4">
+              <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-3">
                 {sorted.map((p) => (
                   <ProductCard key={p._id} product={p} />
                 ))}
               </div>
             ) : (
-              <div className="mt-3 flex flex-col items-center bg-card px-6 py-16 text-center shadow-fk">
-                <Search className="size-10 text-muted-foreground/40" />
-                <p className="mt-4 text-lg font-semibold text-fk-ink">
-                  Sorry, no results found!
+              <div className="mt-4 flex flex-col items-center bg-card px-6 py-16 text-center shadow-btq">
+                <Search className="size-8 text-gold/50" />
+                <p className="mt-4 font-display text-2xl text-ink">
+                  Nothing here yet
                 </p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Please check the spelling or try removing some filters.
+                <p className="mt-1 max-w-sm font-body text-sm text-muted-foreground">
+                  Try a different spelling, or clear a filter to see more of the
+                  collection.
                 </p>
                 {activeFilterCount > 0 && (
                   <button
                     type="button"
                     onClick={clearAll}
-                    className="mt-5 rounded-sm bg-fk-header px-5 py-2 text-sm font-semibold text-white hover:bg-fk-header-soft"
+                    className="mt-6 border border-maroon px-6 py-2.5 font-body text-sm font-medium text-maroon transition-colors hover:bg-maroon hover:text-primary-foreground"
                   >
-                    Clear all filters
+                    Clear refinements
                   </button>
                 )}
               </div>
@@ -403,28 +415,28 @@ export default function Shop() {
       {mobileFiltersOpen && (
         <div className="fixed inset-0 z-[60] lg:hidden">
           <div
-            className="absolute inset-0 bg-black/40"
+            className="absolute inset-0 bg-maroon-deep/30 backdrop-blur-[2px]"
             onClick={() => setMobileFiltersOpen(false)}
           />
-          <div className="absolute inset-y-0 left-0 w-80 max-w-[85vw] overflow-y-auto bg-card shadow-xl">
-            <div className="sticky top-0 flex items-center justify-between bg-fk-header px-4 py-3">
-              <p className="text-sm font-semibold text-white">Filters</p>
+          <div className="absolute inset-y-0 left-0 w-80 max-w-[85vw] overflow-y-auto bg-card">
+            <div className="sticky top-0 flex items-center justify-between border-b border-line bg-card px-5 py-4">
+              <p className="font-display text-xl text-ink">Refine</p>
               <button
                 type="button"
                 aria-label="Close filters"
                 onClick={() => setMobileFiltersOpen(false)}
               >
-                <X className="size-5 text-white" />
+                <X className="size-5 text-ink" />
               </button>
             </div>
             {filterPanel}
-            <div className="sticky bottom-0 border-t border-fk-line bg-card p-3">
+            <div className="sticky bottom-0 border-t border-line bg-card p-4">
               <button
                 type="button"
                 onClick={() => setMobileFiltersOpen(false)}
-                className="w-full bg-fk-accent py-2.5 text-sm font-bold text-fk-ink"
+                className="w-full bg-maroon py-3 font-body text-sm font-medium tracking-wide text-primary-foreground transition-colors hover:bg-maroon-deep"
               >
-                Show {sorted.length} results
+                Show {sorted.length} {sorted.length === 1 ? "piece" : "pieces"}
               </button>
             </div>
           </div>
