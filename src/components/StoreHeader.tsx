@@ -44,10 +44,10 @@ export function StoreHeader() {
 
   return (
     <header className="sticky top-0 z-50">
-      {/* Announcement strip */}
-      <div className="bg-maroon-deep">
-        <p className="mx-auto max-w-7xl px-4 py-2 text-center font-body text-[11px] tracking-[0.22em] text-[#e6d3ae] uppercase lg:px-8">
-          Complimentary shipping across India
+      {/* Gold announcement strip */}
+      <div className="sheen bg-gold-gradient">
+        <p className="mx-auto max-w-7xl px-4 py-2 text-center font-body text-[11px] font-semibold uppercase tracking-[0.22em] text-maroon-deep lg:px-8">
+          ✦ Complimentary shipping across India ✦
         </p>
       </div>
 
@@ -59,36 +59,22 @@ export function StoreHeader() {
 
           {/* Center nav (desktop) */}
           <nav className="hidden items-center gap-8 md:flex">
-            <Link
-              to="/shop"
-              className="font-body text-[13px] font-medium uppercase tracking-[0.18em] text-ink transition-colors hover:text-maroon"
-            >
-              All
-            </Link>
-            <Link
-              to="/shop?category=kurtas"
-              className="font-body text-[13px] font-medium uppercase tracking-[0.18em] text-ink transition-colors hover:text-maroon"
-            >
-              Kurtas
-            </Link>
-            <Link
-              to="/shop?category=sarees"
-              className="font-body text-[13px] font-medium uppercase tracking-[0.18em] text-ink transition-colors hover:text-maroon"
-            >
-              Sarees
-            </Link>
-            <Link
-              to="/shop?category=sets"
-              className="font-body text-[13px] font-medium uppercase tracking-[0.18em] text-ink transition-colors hover:text-maroon"
-            >
-              Sets
-            </Link>
-            <Link
-              to="/shop?category=dresses"
-              className="font-body text-[13px] font-medium uppercase tracking-[0.18em] text-ink transition-colors hover:text-maroon"
-            >
-              Dresses
-            </Link>
+            {[
+              { to: "/shop", label: "All" },
+              { to: "/shop?category=kurtas", label: "Kurtas" },
+              { to: "/shop?category=sarees", label: "Sarees" },
+              { to: "/shop?category=sets", label: "Sets" },
+              { to: "/shop?category=dresses", label: "Dresses" },
+            ].map((item) => (
+              <Link
+                key={item.label}
+                to={item.to}
+                className="group relative font-body text-[13px] font-medium uppercase tracking-[0.18em] text-ink transition-colors hover:text-maroon"
+              >
+                {item.label}
+                <span className="bg-gold-gradient absolute -bottom-1.5 left-0 h-px w-0 transition-all duration-300 group-hover:w-full" />
+              </Link>
+            ))}
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-4">

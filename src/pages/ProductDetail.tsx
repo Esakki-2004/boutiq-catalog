@@ -104,13 +104,14 @@ export default function ProductDetail() {
         <div className="mt-6 flex flex-col gap-10 lg:flex-row lg:gap-14">
           {/* Image */}
           <div className="w-full shrink-0 lg:w-[46%]">
-            <div className="aspect-[3/4] w-full overflow-hidden border border-line bg-sand">
+            <div className="gold-glow relative aspect-[3/4] w-full overflow-hidden border-2 border-gold/60 bg-sand">
               <ProductPhoto
                 photoId={product.photoId}
                 category={product.category}
                 alt={product.name}
                 width={900}
               />
+              <div className="arch pointer-events-none absolute inset-x-6 inset-y-4 border border-gold-soft/40" />
             </div>
           </div>
 
@@ -215,7 +216,7 @@ export default function ProductDetail() {
             {/* CTAs */}
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <button
-                className="flex-1 bg-maroon py-4 font-body text-sm font-medium uppercase tracking-[0.18em] text-primary-foreground transition-colors hover:bg-maroon-deep"
+                className="sheen bg-gold-gradient flex-1 py-4 font-body text-sm font-semibold uppercase tracking-[0.18em] text-maroon-deep shadow-[0_10px_30px_rgba(185,138,47,0.3)] transition-transform hover:-translate-y-0.5"
                 title="Cart and checkout arrive in a future version"
               >
                 Add to Bag
@@ -251,7 +252,7 @@ export default function ProductDetail() {
             {/* Details */}
             <div className="mt-8">
               <p className="font-display text-2xl text-ink">The details</p>
-              <div className="mt-3">
+              <div className="mt-3 border-t-2 border-gold/30">
                 <DetailRow label="Description" value={product.notes} />
                 <DetailRow
                   label="Silhouette"

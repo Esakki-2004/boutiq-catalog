@@ -276,7 +276,13 @@ export default function Shop() {
           <h1 className="mt-2 font-display text-3xl font-semibold text-ink sm:text-4xl">
             {heading()}
           </h1>
-          <div className="rule-gold mx-auto mt-4 h-px w-24" />
+          <div className="mt-4 flex items-center justify-center gap-3" aria-hidden="true">
+            <span className="h-px w-16 bg-gradient-to-r from-transparent to-gold" />
+            <svg viewBox="0 0 24 24" className="size-3.5 fill-gold">
+              <path d="M12 1l2.5 8.5L23 12l-8.5 2.5L12 23l-2.5-8.5L1 12l8.5-2.5z" />
+            </svg>
+            <span className="h-px w-16 bg-gradient-to-l from-transparent to-gold" />
+          </div>
         </div>
 
         <div className="flex gap-6">
@@ -297,11 +303,11 @@ export default function Shop() {
                 <button
                   type="button"
                   onClick={() => setMobileFiltersOpen(true)}
-                  className="flex items-center gap-1.5 border border-line bg-card px-3 py-1.5 font-body text-sm text-ink lg:hidden"
+                  className="flex items-center gap-1.5 border border-gold/40 bg-card px-3 py-1.5 font-body text-sm text-ink lg:hidden"
                 >
                   Refine
                   {activeFilterCount > 0 && (
-                    <span className="bg-maroon px-1.5 text-[10px] font-medium text-primary-foreground">
+                    <span className="bg-gold-gradient px-1.5 text-[10px] font-semibold text-maroon-deep">
                       {activeFilterCount}
                     </span>
                   )}
@@ -398,7 +404,7 @@ export default function Shop() {
                   <button
                     type="button"
                     onClick={clearAll}
-                    className="mt-6 border border-maroon px-6 py-2.5 font-body text-sm font-medium text-maroon transition-colors hover:bg-maroon hover:text-primary-foreground"
+                    className="sheen bg-gold-gradient mt-6 px-6 py-2.5 font-body text-sm font-semibold uppercase tracking-[0.14em] text-maroon-deep"
                   >
                     Clear refinements
                   </button>
@@ -434,7 +440,7 @@ export default function Shop() {
               <button
                 type="button"
                 onClick={() => setMobileFiltersOpen(false)}
-                className="w-full bg-maroon py-3 font-body text-sm font-medium tracking-wide text-primary-foreground transition-colors hover:bg-maroon-deep"
+                className="sheen bg-gold-gradient w-full py-3 font-body text-sm font-semibold uppercase tracking-[0.14em] text-maroon-deep"
               >
                 Show {sorted.length} {sorted.length === 1 ? "piece" : "pieces"}
               </button>

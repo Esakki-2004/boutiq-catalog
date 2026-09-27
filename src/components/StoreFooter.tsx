@@ -20,6 +20,7 @@ const COLUMNS: { title: string; links: string[] }[] = [
 export function StoreFooter() {
   return (
     <footer className="mt-16 bg-maroon-deep text-[#f0e6d8]">
+      <div className="bg-gold-gradient h-1 w-full" />
       <div className="mx-auto max-w-7xl px-4 py-14 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-5">
           <div className="lg:col-span-2">
@@ -30,7 +31,13 @@ export function StoreFooter() {
               A small atelier for Indian women&apos;s wear — cottons, silks and
               chanderi cut in small batches, finished by hand.
             </p>
-            <div className="rule-gold mt-6 h-px w-20 opacity-70" />
+            <div className="mt-6 flex items-center gap-2" aria-hidden="true">
+              <span className="h-px w-14 bg-gradient-to-r from-transparent to-gold-soft/80" />
+              <svg viewBox="0 0 24 24" className="size-3 fill-gold-soft">
+                <path d="M12 1l2.5 8.5L23 12l-8.5 2.5L12 23l-2.5-8.5L1 12l8.5-2.5z" />
+              </svg>
+              <span className="h-px w-14 bg-gradient-to-l from-transparent to-gold-soft/80" />
+            </div>
           </div>
           {COLUMNS.map((col) => (
             <div key={col.title}>
