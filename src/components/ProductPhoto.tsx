@@ -1,6 +1,6 @@
 import { GarmentArt } from "@/components/GarmentArt";
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 /**
  * Product imagery: an Unsplash garment photo with a deterministic inline-SVG
@@ -21,13 +21,19 @@ export function ProductPhoto({
   width?: number;
 }) {
   const [failed, setFailed] = useState(false);
+
+  // Re-allow the photo when a different image is requested. Adjusting tracked
+  // state during render (React-recommended) instead of an effect keeps the
+  // fallback logic free of cascading renders.
+  const [lastPhotoId, setLastPhotoId] = useState(photoId);
+  if (photoId !== lastPhotoId) {
+    setLastPhotoId(photoId);
+    setFailed(false);
+  }
+
   const src = photoId
     ? `https://images.unsplash.com/${photoId}?auto=format&fit=crop&w=${width}&q=70`
     : null;
-
-  useEffect(() => {
-    setFailed(false);
-  }, [photoId]);
 
   if (!src || failed) {
     return (

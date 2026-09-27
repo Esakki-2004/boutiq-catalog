@@ -7,7 +7,7 @@ import type { Doc, Id } from "@/convex/_generated/dataModel";
 import { cn } from "@/lib/utils";
 import { useQuery } from "convex/react";
 import { ChevronRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useParams } from "react-router";
 
 function formatINR(value: number) {
@@ -38,10 +38,15 @@ export default function ProductDetail() {
   const [size, setSize] = useState<string | null>(null);
   const [color, setColor] = useState<string | null>(null);
 
-  useEffect(() => {
+  // Reset the selections when navigating between products. Adjusting tracked
+  // state during render (the React-recommended pattern) avoids an effect and
+  // the cascading render it would cause.
+  const [lastProductId, setLastProductId] = useState(productId);
+  if (productId !== lastProductId) {
+    setLastProductId(productId);
     setSize(null);
     setColor(null);
-  }, [productId]);
+  }
 
   if (product === undefined) {
     return (
