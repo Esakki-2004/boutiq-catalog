@@ -7,19 +7,14 @@ import { Link, useNavigate } from "react-router";
 
 function Wordmark() {
   return (
-    <span className="flex items-baseline gap-1.5">
-      <span className="font-display text-3xl font-semibold tracking-wide text-maroon">
-        Nool
-      </span>
-      <span className="hidden text-[10px] font-medium uppercase tracking-[0.3em] text-gold sm:inline">
-        Est. 2024
-      </span>
+    <span className="font-display text-3xl font-semibold tracking-wide text-maroon">
+      Nool
     </span>
   );
 }
 
 /**
- * Noolue masthead — live announcement strip in the shopper's language,
+ * Nool masthead — live announcement strip in the shopper's language,
  * language toggle, category nav, phone link. No sign-in: shoppers simply
  * browse and order by WhatsApp or call.
  */

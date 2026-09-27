@@ -10,7 +10,7 @@ import {
 export type Lang = "en" | "ta";
 
 /**
- * Noolue dictionary. Tamil comes first in the shop owner's local area, so
+ * Nool dictionary. Tamil comes first in the shop owner's local area, so
  * the site defaults to Tamil; English is one tap away.
  */
 const DICT = {

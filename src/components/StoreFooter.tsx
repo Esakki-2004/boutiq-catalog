@@ -3,7 +3,7 @@ import { useLang } from "@/lib/i18n";
 import { Link } from "react-router";
 
 /**
- * Noolue footer — deep maroon with gold trim, bilingual labels, live order
+ * Nool footer — deep maroon with gold trim, bilingual labels, live order
  * contact points from shop settings, and the discreet owner link to /admin.
  */
 export function StoreFooter() {
