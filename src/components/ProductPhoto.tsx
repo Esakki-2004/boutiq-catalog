@@ -1,6 +1,6 @@
 import { GarmentArt } from "@/components/GarmentArt";
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 /**
  * Product imagery resolution order:

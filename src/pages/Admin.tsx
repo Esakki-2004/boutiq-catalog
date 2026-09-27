@@ -89,9 +89,11 @@ export default function Admin() {
     return () => clearTimeout(id);
   }, [toast]);
 
-  // Pre-fill settings form once loaded
-  useEffect(() => {
-    if (!settings) return;
+  // Pre-fill settings form once loaded — adjusting tracked state during
+  // render (React-recommended) instead of inside an effect.
+  const [settingsKey, setSettingsKey] = useState<string | null>(null);
+  if (settings && settingsKey !== settings._id + String(settings.passcode === undefined)) {
+    setSettingsKey(settings._id + String(settings.passcode === undefined));
     setSWhats(settings.whatsappNumber);
     setSPhone(settings.phoneDisplay);
     setSAnnEn(settings.announcementEn);
@@ -99,7 +101,7 @@ export default function Admin() {
     setSDelEn(settings.deliveryInfoEn);
     setSDelTa(settings.deliveryInfoTa);
     setSFree(String(settings.freeDeliveryAbove));
-  }, [settings]);
+  }
 
   async function handleUnlock(e: React.FormEvent) {
     e.preventDefault();

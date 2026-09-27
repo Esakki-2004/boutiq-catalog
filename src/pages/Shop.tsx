@@ -7,35 +7,48 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { api } from "@/convex/_generated/api";
 import { cn } from "@/lib/utils";
+import { useLang } from "@/lib/i18n";
 import { useQuery } from "convex/react";
 import { ChevronDown, Search, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router";
 
 const CATEGORIES = [
-  { id: "kurtas", label: "Kurtas & Kurtis" },
-  { id: "sarees", label: "Sarees" },
-  { id: "sets", label: "Co-ord Sets" },
-  { id: "dresses", label: "Dresses" },
+  { id: "kurtas", labelKey: "navKurtas" },
+  { id: "sarees", labelKey: "navSarees" },
+  { id: "sets", labelKey: "navSets" },
+  { id: "dresses", labelKey: "navDresses" },
 ] as const;
 
 const SORTS = [
-  { id: "relevance", label: "Featured" },
-  { id: "priceAsc", label: "Price — Low to High" },
-  { id: "priceDesc", label: "Price — High to Low" },
-  { id: "newest", label: "New Arrivals" },
-  { id: "rating", label: "Most Loved" },
+  { id: "relevance", labelKey: "sortFeatured" },
+  { id: "priceAsc", labelKey: "sortPriceAsc" },
+  { id: "priceDesc", labelKey: "sortPriceDesc" },
+  { id: "newest", labelKey: "sortNewest" },
+  { id: "rating", labelKey: "sortRating" },
 ] as const;
 
 const PRICE_BANDS = [
-  { id: "all", label: "All prices", min: 0, max: Number.POSITIVE_INFINITY },
-  { id: "under2500", label: "Under ₹2,500", min: 0, max: 2499 },
-  { id: "2500to4000", label: "₹2,500 – ₹4,000", min: 2500, max: 4000 },
-  { id: "4000to6000", label: "₹4,000 – ₹6,000", min: 4001, max: 6000 },
-  { id: "over6000", label: "Above ₹6,000", min: 6001, max: Number.POSITIVE_INFINITY },
+  { id: "all", labelKey: "priceAll", min: 0, max: Number.POSITIVE_INFINITY },
+  { id: "under2500", labelKey: "priceUnder2500", min: 0, max: 2499 },
+  { id: "2500to4000", labelKey: "price2500to4000", min: 2500, max: 4000 },
+  { id: "4000to6000", labelKey: "price4000to6000", min: 4001, max: 6000 },
+  { id: "over6000", labelKey: "priceOver6000", min: 6001, max: Number.POSITIVE_INFINITY },
 ] as const;
 
 type SortId = (typeof SORTS)[number]["id"];
+
+function Ornament() {
+  return (
+    <div className="flex items-center justify-center gap-3" aria-hidden="true">
+      <span className="h-px w-16 bg-gradient-to-r from-transparent to-gold" />
+      <svg viewBox="0 0 24 24" className="size-3.5 fill-gold">
+        <path d="M12 1l2.5 8.5L23 12l-8.5 2.5L12 23l-2.5-8.5L1 12l8.5-2.5z" />
+      </svg>
+      <span className="h-px w-16 bg-gradient-to-l from-transparent to-gold" />
+    </div>
+  );
+}
 
 function FilterSection({
   title,
@@ -55,9 +68,7 @@ function FilterSection({
         className="flex w-full items-center justify-between font-body text-[13px] font-medium uppercase tracking-[0.18em] text-ink"
       >
         {title}
-        <ChevronDown
-          className={cn("size-4 transition-transform", open && "rotate-180")}
-        />
+        <ChevronDown className={cn("size-4 transition-transform", open && "rotate-180")} />
       </button>
       {open && <div className="mt-3 space-y-2.5">{children}</div>}
     </div>
@@ -65,6 +76,7 @@ function FilterSection({
 }
 
 export default function Shop() {
+  const { t } = useLang();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const categoryParam = searchParams.get("category");
@@ -100,8 +112,6 @@ export default function Shop() {
       .filter((p) => p.rating >= minRatingParam);
   }, [catalogue?.items, priceParam, minRatingParam]);
 
-  // Sorting happens client-side over the small curated catalogue so the price
-  // and rating filters and the sort dropdown stay perfectly in sync.
   const sorted = useMemo(() => {
     const arr = [...items];
     if (sortParam === "priceAsc") arr.sort((a, b) => a.price - b.price);
@@ -133,9 +143,9 @@ export default function Shop() {
     if (subcategoryParam) return subcategoryParam;
     if (categoryParam) {
       const c = CATEGORIES.find((c) => c.id === categoryParam);
-      return c ? c.label : "The Collection";
+      return c ? t(c.labelKey) : t("navAll");
     }
-    return "The Collection";
+    return t("catTitle");
   }
 
   const activeFilterCount =
@@ -153,19 +163,19 @@ export default function Shop() {
   const filterPanel = (
     <div className="px-5 py-2">
       <div className="flex items-center justify-between py-3">
-        <p className="font-display text-xl font-semibold text-ink">Refine</p>
+        <p className="font-display text-xl font-semibold text-ink">{t("refine")}</p>
         {activeFilterCount > 0 && (
           <button
             type="button"
             onClick={clearAll}
             className="text-[11px] font-medium uppercase tracking-[0.18em] text-maroon hover:underline"
           >
-            Clear all
+            {t("clearAll")}
           </button>
         )}
       </div>
 
-      <FilterSection title="Categories">
+      <FilterSection title={t("categories")}>
         {CATEGORIES.map((c) => (
           <div key={c.id} className="flex items-center gap-2.5">
             <Checkbox
@@ -174,18 +184,15 @@ export default function Shop() {
               onCheckedChange={() => toggleCategory(c.id)}
               className="size-4 rounded-[2px] border-line data-[state=checked]:border-maroon data-[state=checked]:bg-maroon"
             />
-            <Label
-              htmlFor={`cat-${c.id}`}
-              className="cursor-pointer font-body text-sm text-ink"
-            >
-              {c.label}
+            <Label htmlFor={`cat-${c.id}`} className="cursor-pointer font-body text-sm text-ink">
+              {t(c.labelKey)}
             </Label>
           </div>
         ))}
       </FilterSection>
 
       {cat && facetData && facetData.subcategories.length > 0 && (
-        <FilterSection title="Silhouette">
+        <FilterSection title={t("silhouette")}>
           {facetData.subcategories.map((s) => (
             <div key={s.label} className="flex items-center gap-2.5">
               <Checkbox
@@ -193,17 +200,13 @@ export default function Shop() {
                 checked={subcategoryParam === s.label}
                 onCheckedChange={() =>
                   updateParams((sp) => {
-                    if (sp.get("subcategory") === s.label)
-                      sp.delete("subcategory");
+                    if (sp.get("subcategory") === s.label) sp.delete("subcategory");
                     else sp.set("subcategory", s.label);
                   })
                 }
                 className="size-4 rounded-[2px] border-line data-[state=checked]:border-maroon data-[state=checked]:bg-maroon"
               />
-              <Label
-                htmlFor={`sub-${s.label}`}
-                className="flex cursor-pointer items-center gap-1.5 font-body text-sm text-ink"
-              >
+              <Label htmlFor={`sub-${s.label}`} className="flex cursor-pointer items-center gap-1.5 font-body text-sm text-ink">
                 {s.label}
                 <span className="text-xs text-muted-foreground">({s.count})</span>
               </Label>
@@ -212,7 +215,7 @@ export default function Shop() {
         </FilterSection>
       )}
 
-      <FilterSection title="Price">
+      <FilterSection title={t("price")}>
         <RadioGroup
           value={priceParam}
           onValueChange={(v) => updateParams((sp) => sp.set("price", v))}
@@ -220,23 +223,16 @@ export default function Shop() {
         >
           {PRICE_BANDS.map((b) => (
             <div key={b.id} className="flex items-center gap-2.5">
-              <RadioGroupItem
-                value={b.id}
-                id={`price-${b.id}`}
-                className="size-4 border-line text-maroon"
-              />
-              <Label
-                htmlFor={`price-${b.id}`}
-                className="cursor-pointer font-body text-sm text-ink"
-              >
-                {b.label}
+              <RadioGroupItem value={b.id} id={`price-${b.id}`} className="size-4 border-line text-maroon" />
+              <Label htmlFor={`price-${b.id}`} className="cursor-pointer font-body text-sm text-ink">
+                {t(b.labelKey)}
               </Label>
             </div>
           ))}
         </RadioGroup>
       </FilterSection>
 
-      <FilterSection title="Loved by">
+      <FilterSection title={t("lovedBy")}>
         {[4.5, 4].map((r) => (
           <div key={r} className="flex items-center gap-2.5">
             <Checkbox
@@ -250,15 +246,12 @@ export default function Shop() {
               }
               className="size-4 rounded-[2px] border-line data-[state=checked]:border-maroon data-[state=checked]:bg-maroon"
             />
-            <Label
-              htmlFor={`rating-${r}`}
-              className="flex cursor-pointer items-center gap-1.5 font-body text-sm text-ink"
-            >
+            <Label htmlFor={`rating-${r}`} className="flex cursor-pointer items-center gap-1.5 font-body text-sm text-ink">
               {r}
               <svg viewBox="0 0 24 24" className="size-3 fill-gold" aria-hidden="true">
                 <path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6z" />
               </svg>
-              <span className="text-muted-foreground">&amp; up</span>
+              <span className="text-muted-foreground">{t("andUp")}</span>
             </Label>
           </div>
         ))}
@@ -273,32 +266,26 @@ export default function Shop() {
       <main className="mx-auto w-full max-w-7xl flex-1 px-0 lg:px-8">
         {/* Editorial page head */}
         <div className="px-5 pb-6 pt-8 text-center lg:px-0">
-          <p className="eyebrow text-gold">Boutiq Atelier</p>
+          <p className="eyebrow text-gold">{t("shopEyebrow")}</p>
           <h1 className="mt-2 font-display text-3xl font-semibold text-ink sm:text-4xl">
             {heading()}
           </h1>
-          <div className="mt-4 flex items-center justify-center gap-3" aria-hidden="true">
-            <span className="h-px w-16 bg-gradient-to-r from-transparent to-gold" />
-            <svg viewBox="0 0 24 24" className="size-3.5 fill-gold">
-              <path d="M12 1l2.5 8.5L23 12l-8.5 2.5L12 23l-2.5-8.5L1 12l8.5-2.5z" />
-            </svg>
-            <span className="h-px w-16 bg-gradient-to-l from-transparent to-gold" />
+          <div className="mt-4">
+            <Ornament />
           </div>
         </div>
 
         <div className="flex gap-6">
-          {/* Sidebar (desktop) */}
           <aside className="hidden w-64 shrink-0 self-start bg-card shadow-btq lg:block">
             {filterPanel}
           </aside>
 
-          {/* Listing column */}
           <div className="min-w-0 flex-1">
             {/* Sort bar */}
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line bg-card/70 px-4 py-3">
               <p className="font-body text-sm text-muted-foreground">
                 <span className="font-medium text-ink">{sorted.length}</span>{" "}
-                {sorted.length === 1 ? "piece" : "pieces"}
+                {sorted.length === 1 ? t("piece") : t("pieces")}
               </p>
               <div className="flex items-center gap-2">
                 <button
@@ -306,7 +293,7 @@ export default function Shop() {
                   onClick={() => setMobileFiltersOpen(true)}
                   className="flex items-center gap-1.5 border border-gold/40 bg-card px-3 py-1.5 font-body text-sm text-ink lg:hidden"
                 >
-                  Refine
+                  {t("refine")}
                   {activeFilterCount > 0 && (
                     <span className="bg-gold-gradient px-1.5 text-[10px] font-semibold text-maroon-deep">
                       {activeFilterCount}
@@ -314,19 +301,15 @@ export default function Shop() {
                   )}
                 </button>
                 <div className="flex items-center gap-2 font-body text-sm">
-                  <span className="hidden text-muted-foreground sm:inline">
-                    Sort
-                  </span>
+                  <span className="hidden text-muted-foreground sm:inline">{t("sort")}</span>
                   <select
                     value={sortParam}
-                    onChange={(e) =>
-                      updateParams((sp) => sp.set("sort", e.target.value))
-                    }
+                    onChange={(e) => updateParams((sp) => sp.set("sort", e.target.value))}
                     className="border border-line bg-card px-2 py-1.5 font-body text-sm text-ink outline-none focus:border-maroon"
                   >
                     {SORTS.map((s) => (
                       <option key={s.id} value={s.id}>
-                        {s.label}
+                        {t(s.labelKey)}
                       </option>
                     ))}
                   </select>
@@ -334,7 +317,7 @@ export default function Shop() {
               </div>
             </div>
 
-            {/* Active search pill */}
+            {/* Search pill */}
             {qParam && (
               <div className="mt-4 flex items-center gap-2">
                 <span className="inline-flex items-center gap-1.5 bg-sand px-3 py-1 font-body text-sm text-maroon">
@@ -353,7 +336,7 @@ export default function Shop() {
               </div>
             )}
 
-            {/* Mobile search field */}
+            {/* Mobile search */}
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -369,12 +352,12 @@ export default function Shop() {
               <input
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                placeholder="Search kurtas, sarees, sets…"
+                placeholder={t("searchPlaceholder")}
                 className="h-10 w-full border border-line bg-card pl-9 pr-3 font-body text-sm text-ink outline-none focus:border-maroon"
               />
             </form>
 
-            {/* Product grid */}
+            {/* Grid */}
             {catalogue === undefined ? (
               <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3">
                 {Array.from({ length: 6 }).map((_, i) => (
@@ -394,12 +377,9 @@ export default function Shop() {
             ) : (
               <div className="mt-4 flex flex-col items-center bg-card px-6 py-16 text-center shadow-btq">
                 <Search className="size-8 text-gold/50" />
-                <p className="mt-4 font-display text-2xl text-ink">
-                  Nothing here yet
-                </p>
+                <p className="mt-4 font-display text-2xl text-ink">{t("nothingTitle")}</p>
                 <p className="mt-1 max-w-sm font-body text-sm text-muted-foreground">
-                  Try a different spelling, or clear a filter to see more of the
-                  collection.
+                  {t("nothingBody")}
                 </p>
                 {activeFilterCount > 0 && (
                   <button
@@ -407,7 +387,7 @@ export default function Shop() {
                     onClick={clearAll}
                     className="sheen bg-gold-gradient mt-6 px-6 py-2.5 font-body text-sm font-semibold uppercase tracking-[0.14em] text-maroon-deep"
                   >
-                    Clear refinements
+                    {t("clearRefinements")}
                   </button>
                 )}
               </div>
@@ -428,12 +408,8 @@ export default function Shop() {
           />
           <div className="absolute inset-y-0 left-0 w-80 max-w-[85vw] overflow-y-auto bg-card">
             <div className="sticky top-0 flex items-center justify-between border-b border-line bg-card px-5 py-4">
-              <p className="font-display text-xl text-ink">Refine</p>
-              <button
-                type="button"
-                aria-label="Close filters"
-                onClick={() => setMobileFiltersOpen(false)}
-              >
+              <p className="font-display text-xl text-ink">{t("refine")}</p>
+              <button type="button" aria-label="Close filters" onClick={() => setMobileFiltersOpen(false)}>
                 <X className="size-5 text-ink" />
               </button>
             </div>
@@ -444,7 +420,7 @@ export default function Shop() {
                 onClick={() => setMobileFiltersOpen(false)}
                 className="sheen bg-gold-gradient w-full py-3 font-body text-sm font-semibold uppercase tracking-[0.14em] text-maroon-deep"
               >
-                Show {sorted.length} {sorted.length === 1 ? "piece" : "pieces"}
+                {t("showResults")} {sorted.length}
               </button>
             </div>
           </div>

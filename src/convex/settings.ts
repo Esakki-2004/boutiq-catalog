@@ -70,7 +70,7 @@ export const update = mutation({
     if (args.passcode !== current.passcode) {
       throw new Error("Wrong passcode");
     }
-    const { passcode, newPasscode, ...rest } = args;
+    const { newPasscode, ...rest } = args;
     const patch: Record<string, unknown> = {};
     for (const [k, val] of Object.entries(rest)) {
       if (val !== undefined) patch[k] = val;
@@ -110,6 +110,7 @@ export const addProduct = mutation({
     }
 
     const { passcode, ...p } = args;
+    void passcode;
     await ctx.db.insert("products", {
       name: p.name,
       nameTa: p.nameTa,
@@ -192,7 +193,7 @@ export const editProduct = mutation({
     if (args.passcode !== current.passcode) {
       throw new Error("Wrong passcode");
     }
-    const { passcode, id, ...rest } = args;
+    const { id, ...rest } = args;
     const patch: Record<string, unknown> = {};
     for (const [k, val] of Object.entries(rest)) {
       if (val !== undefined && val !== "") patch[k] = val;

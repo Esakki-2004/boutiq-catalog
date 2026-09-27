@@ -94,7 +94,7 @@ function SectionHead({
 }
 
 export default function Landing() {
-  const { lang, t } = useLang();
+  const { t } = useLang();
   const { deliveryInfo } = useContact();
   const newest = useQuery(api.products.list, { sort: "newest" });
   const loved = useQuery(api.products.list, { sort: "rating" });

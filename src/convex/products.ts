@@ -1,28 +1,25 @@
 import { v } from "convex/values";
 import { internalMutation, mutation, query } from "./_generated/server";
 import { categoryValidator } from "./schema";
-import { DEFAULT_SETTINGS, getOrCreateSettings } from "./settings";
-import { SEED_PRODUCTS } from "./seedData";
+import { getOrCreateSettings } from "./settings";
+import { SEED_PART1, SEED_PART2 } from "./seedData";
 
-/**
- * Boutiq product catalogue — Indian women's wear with Tamil translations.
- * The shop owner manages the live catalogue from /admin; the seed list only
- * fills an empty database.
- */
+/** All seed products combined — 16 pieces with Tamil translations. */
+const SEED_PRODUCTS = [...SEED_PART1, ...SEED_PART2];
 
 /** Seed the catalogue. Idempotent — skips when products already exist. */
 export const seed = internalMutation({
   handler: async (ctx) => {
     const existing = await ctx.db.query("products").first();
     if (existing !== null) {
-      return { seeded: 0, skipped: true };
+      return { seeded: 0, canSkip: true as const };
     }
     let count = 0;
     for (const p of SEED_PRODUCTS) {
       await ctx.db.insert("products", { ...p, active: true });
       count += 1;
     }
-    return { seeded: count, skipped: false };
+    return { seeded: count, canSkip: false as const };
   },
 });
 
@@ -68,7 +65,6 @@ export const list = query({
   },
   handler: async (ctx, args) => {
     const rows = await ctx.db.query("products").collect();
-
     const search = args.search?.trim().toLowerCase() ?? "";
     const items = rows.filter((p) => {
       if (p.active === false) return false;
@@ -79,8 +75,7 @@ export const list = query({
         return false;
       }
       if (search !== "") {
-        const hay =
-          `${p.name} ${p.nameTa ?? ""} ${p.brand} ${p.subcategory} ${p.category} ${p.colors.join(" ")} ${p.notes} ${p.notesTa ?? ""}`.toLowerCase();
+        const hay = `${p.name} ${p.nameTa ?? ""} ${p.brand} ${p.subcategory} ${p.category} ${p.colors.join(" ")} ${p.notes} ${p.notesTa ?? ""}`.toLowerCase();
         if (!hay.includes(search)) return false;
       }
       return true;
