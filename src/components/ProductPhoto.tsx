@@ -1,20 +1,23 @@
 import { GarmentArt } from "@/components/GarmentArt";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 /**
- * Product imagery: an Unsplash garment photo with a deterministic inline-SVG
- * garment illustration as fallback. The fallback keeps every card intact when
- * a photo is missing or the network is unavailable.
+ * Product imagery resolution order:
+ *   1. photoUrl — any image link the shop owner pasted in /admin
+ *   2. photoId  — curated Unsplash photo from the seed catalogue
+ *   3. inline SVG garment illustration — offline-safe fallback
  */
 export function ProductPhoto({
   photoId,
+  photoUrl,
   category,
   alt,
   className,
   width = 600,
 }: {
   photoId?: string;
+  photoUrl?: string;
   category: string;
   alt: string;
   className?: string;
@@ -22,18 +25,20 @@ export function ProductPhoto({
 }) {
   const [failed, setFailed] = useState(false);
 
-  // Re-allow the photo when a different image is requested. Adjusting tracked
-  // state during render (React-recommended) instead of an effect keeps the
-  // fallback logic free of cascading renders.
-  const [lastPhotoId, setLastPhotoId] = useState(photoId);
-  if (photoId !== lastPhotoId) {
-    setLastPhotoId(photoId);
+  const key = photoUrl ?? photoId ?? "none";
+  // Re-allow the photo when a different image is requested; adjusting tracked
+  // state during render avoids the cascading render an effect would cause.
+  const [lastKey, setLastKey] = useState(key);
+  if (key !== lastKey) {
+    setLastKey(key);
     setFailed(false);
   }
 
-  const src = photoId
-    ? `https://images.unsplash.com/${photoId}?auto=format&fit=crop&w=${width}&q=70`
-    : null;
+  const src =
+    photoUrl ??
+    (photoId
+      ? `https://images.unsplash.com/${photoId}?auto=format&fit=crop&w=${width}&q=70`
+      : null);
 
   if (!src || failed) {
     return (

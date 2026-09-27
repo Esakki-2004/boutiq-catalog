@@ -1,4 +1,10 @@
-import { BOUTIQ_CONTACT, buildOrderMessage, waLink } from "@/lib/contact";
+import {
+  buildOrderMessage,
+  generalMessage,
+  useContact,
+  waLink,
+} from "@/lib/useContact";
+import { useLang } from "@/lib/i18n";
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -17,67 +23,71 @@ function PhoneIcon({ className }: { className?: string }) {
 }
 
 /**
- * The special order buttons for the product page: a gold WhatsApp
- * "Order on WhatsApp" action carrying a pre-filled message (piece, size,
- * colour, price) and an outline "Call to Order" action.
+ * The special order buttons on the product page — gold WhatsApp action with a
+ * pre-filled bilingual message and an outline call action.
  */
 export function OrderButtons({
   name,
+  nameTa,
   brand,
   price,
   size,
   color,
 }: {
   name: string;
+  nameTa?: string;
   brand: string;
   price: number;
   size?: string | null;
   color?: string | null;
 }) {
-  const message = buildOrderMessage({ name, brand, price, size, color });
+  const { lang } = useLang();
+  const { whatsappNumber, phoneTel } = useContact();
+  const message = buildOrderMessage(lang, { name, nameTa, brand, price, size, color });
 
   return (
     <div className="flex flex-col gap-3 sm:flex-row">
       <a
-        href={waLink(message)}
+        href={waLink(whatsappNumber, message)}
         target="_blank"
         rel="noopener noreferrer"
         aria-label={`Order ${name} on WhatsApp`}
         className="sheen bg-gold-gradient flex flex-1 items-center justify-center gap-2.5 py-4 font-body text-sm font-semibold uppercase tracking-[0.18em] text-maroon-deep shadow-[0_10px_30px_rgba(185,138,47,0.3)] transition-transform hover:-translate-y-0.5"
       >
         <WhatsAppIcon className="size-5" />
-        Order on WhatsApp
+        {lang === "ta" ? "வாட்ஸ்அப்பில் ஆர்டர்" : "Order on WhatsApp"}
       </a>
       <a
-        href={BOUTIQ_CONTACT.phoneTel}
-        aria-label={`Call ${BOUTIQ_CONTACT.phoneDisplay} to order ${name}`}
+        href={phoneTel}
+        aria-label="Call to order"
         className="flex flex-1 items-center justify-center gap-2.5 border border-maroon py-4 font-body text-sm font-medium uppercase tracking-[0.18em] text-maroon transition-colors hover:bg-maroon hover:text-primary-foreground"
       >
         <PhoneIcon className="size-5" />
-        Call to Order
+        {lang === "ta" ? "அழைத்து ஆர்டர்" : "Call to Order"}
       </a>
     </div>
   );
 }
 
 /**
- * Floating WhatsApp bubble shown on every storefront page — the
- * always-visible special button for ordering through a message.
+ * Floating WhatsApp bubble on every storefront page — the always-visible
+ * special button for ordering through a message.
  */
 export function FloatingWhatsApp() {
+  const { lang } = useLang();
+  const { whatsappNumber } = useContact();
+
   return (
     <a
-      href={waLink(
-        "Namaste Boutiq! I would like to place an order — please guide me.",
-      )}
+      href={waLink(whatsappNumber, generalMessage(lang))}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Chat with Boutiq on WhatsApp to order"
+      aria-label="Chat with the shop on WhatsApp to order"
       className="sheen bg-gold-gradient fixed bottom-5 right-5 z-[70] flex items-center gap-2.5 rounded-full py-3.5 pl-5 pr-6 shadow-[0_12px_36px_rgba(74,28,28,0.35)] transition-transform hover:-translate-y-0.5"
     >
       <WhatsAppIcon className="size-6 text-maroon-deep" />
       <span className="hidden font-body text-sm font-semibold uppercase tracking-[0.14em] text-maroon-deep sm:inline">
-        Order on WhatsApp
+        {lang === "ta" ? "ஆர்டர் செய்யுங்கள்" : "Order Now"}
       </span>
     </a>
   );

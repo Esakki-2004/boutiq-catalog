@@ -1,24 +1,14 @@
-import { useAuth } from "@/hooks/use-auth";
 import { Input } from "@/components/ui/input";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Search, User } from "lucide-react";
-import { BOUTIQ_CONTACT } from "@/lib/contact";
+import { Search } from "lucide-react";
+import { useContact } from "@/lib/useContact";
+import { useLang } from "@/lib/i18n";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 
-function Wordmark({ light = false }: { light?: boolean }) {
+function Wordmark() {
   return (
     <span className="flex items-baseline gap-1.5">
-      <span
-        className={`font-display text-3xl font-semibold tracking-wide ${
-          light ? "text-[#faf7f2]" : "text-maroon"
-        }`}
-      >
+      <span className="font-display text-3xl font-semibold tracking-wide text-maroon">
         Boutiq
       </span>
       <span className="hidden text-[10px] font-medium uppercase tracking-[0.3em] text-gold sm:inline">
@@ -29,12 +19,14 @@ function Wordmark({ light = false }: { light?: boolean }) {
 }
 
 /**
- * Boutique masthead — announcement strip, ivory bar with serif wordmark and
- * centered category nav, gold hairline underneath. Quiet, not marketplace-loud.
+ * Boutique masthead — live announcement strip in the shopper's language,
+ * language toggle, category nav, phone link. No sign-in: shoppers simply
+ * browse and order by WhatsApp or call.
  */
 export function StoreHeader() {
-  const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
+  const { lang, setLang, t } = useLang();
+  const { announcement, phoneTel, phoneDisplay } = useContact();
   const [query, setQuery] = useState("");
 
   const submitSearch = (e: React.FormEvent) => {
@@ -43,12 +35,20 @@ export function StoreHeader() {
     navigate(q ? `/shop?q=${encodeURIComponent(q)}` : "/shop");
   };
 
+  const nav = [
+    { to: "/shop", key: "navAll" as const },
+    { to: "/shop?category=kurtas", key: "navKurtas" as const },
+    { to: "/shop?category=sarees", key: "navSarees" as const },
+    { to: "/shop?category=sets", key: "navSets" as const },
+    { to: "/shop?category=dresses", key: "navDresses" as const },
+  ];
+
   return (
     <header className="sticky top-0 z-50">
-      {/* Gold announcement strip */}
+      {/* Announcement strip — bilingual, from shop settings */}
       <div className="sheen bg-gold-gradient">
         <p className="mx-auto max-w-7xl px-4 py-2 text-center font-body text-[11px] font-semibold uppercase tracking-[0.22em] text-maroon-deep lg:px-8">
-          ✦ Complimentary shipping across India ✦
+          {announcement || (lang === "ta" ? "✦ உங்கள் பகுதியில் இலவச டெலிவரி ✦" : "✦ Free delivery in your area ✦")}
         </p>
       </div>
 
@@ -60,83 +60,63 @@ export function StoreHeader() {
 
           {/* Center nav (desktop) */}
           <nav className="hidden items-center gap-8 md:flex">
-            {[
-              { to: "/shop", label: "All" },
-              { to: "/shop?category=kurtas", label: "Kurtas" },
-              { to: "/shop?category=sarees", label: "Sarees" },
-              { to: "/shop?category=sets", label: "Sets" },
-              { to: "/shop?category=dresses", label: "Dresses" },
-            ].map((item) => (
+            {nav.map((item) => (
               <Link
-                key={item.label}
+                key={item.key}
                 to={item.to}
                 className="group relative font-body text-[13px] font-medium uppercase tracking-[0.18em] text-ink transition-colors hover:text-maroon"
               >
-                {item.label}
+                {t(item.key)}
                 <span className="bg-gold-gradient absolute -bottom-1.5 left-0 h-px w-0 transition-all duration-300 group-hover:w-full" />
               </Link>
             ))}
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-4">
+            {/* Language toggle */}
+            <div className="flex border border-line" role="group" aria-label="Language">
+              <button
+                type="button"
+                onClick={() => setLang("ta")}
+                className={`px-2.5 py-1.5 font-body text-xs font-semibold transition-colors ${
+                  lang === "ta" ? "bg-maroon text-primary-foreground" : "bg-card text-ink hover:text-maroon"
+                }`}
+              >
+                தமிழ்
+              </button>
+              <button
+                type="button"
+                onClick={() => setLang("en")}
+                className={`px-2.5 py-1.5 font-body text-xs font-semibold transition-colors ${
+                  lang === "en" ? "bg-maroon text-primary-foreground" : "bg-card text-ink hover:text-maroon"
+                }`}
+              >
+                EN
+              </button>
+            </div>
+
             <form onSubmit={submitSearch} role="search" className="hidden lg:block">
               <div className="relative">
                 <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search the atelier"
-                  className="h-9 w-52 rounded-none border-line bg-ivory pl-8 font-body text-sm text-ink focus-visible:ring-maroon/30"
+                  placeholder={t("searchPlaceholder")}
+                  className="h-9 w-44 rounded-none border-line bg-ivory pl-8 font-body text-sm text-ink focus-visible:ring-maroon/30 xl:w-52"
                 />
               </div>
             </form>
 
             <a
-              href={BOUTIQ_CONTACT.phoneTel}
-              className="hidden items-center gap-1.5 font-body text-sm text-ink transition-colors hover:text-maroon lg:flex"
-              title="Call to order"
+              href={phoneTel}
+              className="hidden items-center gap-1.5 font-body text-sm text-ink transition-colors hover:text-maroon xl:flex"
+              title={t("callToOrder")}
             >
               <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
                 <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
               </svg>
-              {BOUTIQ_CONTACT.phoneDisplay}
+              {phoneDisplay}
             </a>
-
-            {isAuthenticated ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button
-                    type="button"
-                    className="flex items-center gap-2 font-body text-sm text-ink transition-colors hover:text-maroon"
-                  >
-                    <User className="size-5" strokeWidth={1.5} />
-                    <span className="hidden max-w-24 truncate sm:inline">
-                      {user?.name ?? user?.email ?? "Account"}
-                    </span>
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="end"
-                  className="w-40 rounded-none border-line"
-                >
-                  <DropdownMenuItem
-                    className="cursor-pointer font-body text-sm"
-                    onClick={() => navigate("/shop")}
-                  >
-                    Shop
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Link to="/auth?returnTo=%2Fshop">
-                <button
-                  type="button"
-                  className="font-body text-sm text-ink transition-colors hover:text-maroon"
-                >
-                  Sign in
-                </button>
-              </Link>
-            )}
           </div>
         </div>
       </div>

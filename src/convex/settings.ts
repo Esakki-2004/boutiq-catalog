@@ -1,5 +1,6 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import type { Doc } from "./_generated/dataModel";
+import { type MutationCtx, mutation, query } from "./_generated/server";
 import { categoryValidator } from "./schema";
 
 /**
@@ -11,7 +12,7 @@ import { categoryValidator } from "./schema";
  */
 
 /** Fallback settings used until the owner saves their own. */
-const DEFAULTS = {
+export const DEFAULT_SETTINGS = {
   whatsappNumber: "919845012345",
   phoneDisplay: "+91 98450 12345",
   announcementEn: "Complimentary shipping across India",
@@ -22,13 +23,23 @@ const DEFAULTS = {
   passcode: "boutiq2024",
 };
 
-/** Return the settings row, creating it with defaults on first call. */
+/** Load the settings row, creating it with defaults on first admin action. */
+export async function getOrCreateSettings(
+  ctx: MutationCtx,
+): Promise<Doc<"settings">> {
+  const row = await ctx.db.query("settings").first();
+  if (row) return row;
+  const id = await ctx.db.insert("settings", { ...DEFAULT_SETTINGS });
+  const created = await ctx.db.get(id);
+  if (!created) throw new Error("Failed to create settings row");
+  return created;
+}
+
+/** Public settings for the storefront. Null until the owner saves once. */
 export const get = query({
   args: {},
   handler: async (ctx) => {
-    const row = await ctx.db.query("settings").first();
-    if (row) return row;
-    return await ctx.db.insert("settings", { ...DEFAULTS });
+    return await ctx.db.query("settings").first();
   },
 });
 
@@ -36,8 +47,7 @@ export const get = query({
 export const verifyPasscode = mutation({
   args: { passcode: v.string() },
   handler: async (ctx, args) => {
-    const row = await ctx.db.query("settings").first();
-    const current = row ?? (await ctx.db.insert("settings", { ...DEFAULTS }));
+    const current = await getOrCreateSettings(ctx);
     return { ok: args.passcode === current.passcode };
   },
 });
@@ -56,8 +66,7 @@ export const update = mutation({
     newPasscode: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const row = await ctx.db.query("settings").first();
-    const current = row ?? (await ctx.db.insert("settings", { ...DEFAULTS }));
+    const current = await getOrCreateSettings(ctx);
     if (args.passcode !== current.passcode) {
       throw new Error("Wrong passcode");
     }
@@ -95,8 +104,7 @@ export const addProduct = mutation({
     tags: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
-    const row = await ctx.db.query("settings").first();
-    const current = row ?? (await ctx.db.insert("settings", { ...DEFAULTS }));
+    const current = await getOrCreateSettings(ctx);
     if (args.passcode !== current.passcode) {
       throw new Error("Wrong passcode");
     }
@@ -131,8 +139,7 @@ export const addProduct = mutation({
 export const hideProduct = mutation({
   args: { passcode: v.string(), id: v.id("products") },
   handler: async (ctx, args) => {
-    const row = await ctx.db.query("settings").first();
-    const current = row ?? (await ctx.db.insert("settings", { ...DEFAULTS }));
+    const current = await getOrCreateSettings(ctx);
     if (args.passcode !== current.passcode) {
       throw new Error("Wrong passcode");
     }
@@ -145,8 +152,7 @@ export const hideProduct = mutation({
 export const showProduct = mutation({
   args: { passcode: v.string(), id: v.id("products") },
   handler: async (ctx, args) => {
-    const row = await ctx.db.query("settings").first();
-    const current = row ?? (await ctx.db.insert("settings", { ...DEFAULTS }));
+    const current = await getOrCreateSettings(ctx);
     if (args.passcode !== current.passcode) {
       throw new Error("Wrong passcode");
     }
@@ -159,8 +165,7 @@ export const showProduct = mutation({
 export const deleteProduct = mutation({
   args: { passcode: v.string(), id: v.id("products") },
   handler: async (ctx, args) => {
-    const row = await ctx.db.query("settings").first();
-    const current = row ?? (await ctx.db.insert("settings", { ...DEFAULTS }));
+    const current = await getOrCreateSettings(ctx);
     if (args.passcode !== current.passcode) {
       throw new Error("Wrong passcode");
     }
@@ -169,7 +174,7 @@ export const deleteProduct = mutation({
   },
 });
 
-/** Owner edits price, stock visibility, names and description of a product. */
+/** Owner edits price, names, description or image of a product. */
 export const editProduct = mutation({
   args: {
     passcode: v.string(),
@@ -183,8 +188,7 @@ export const editProduct = mutation({
     photoUrl: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const row = await ctx.db.query("settings").first();
-    const current = row ?? (await ctx.db.insert("settings", { ...DEFAULTS }));
+    const current = await getOrCreateSettings(ctx);
     if (args.passcode !== current.passcode) {
       throw new Error("Wrong passcode");
     }
