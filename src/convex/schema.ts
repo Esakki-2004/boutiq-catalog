@@ -44,24 +44,43 @@ const schema = defineSchema(
     // add other tables here
 
     // Product catalogue for the boutique storefront.
+    // Tamil fields (nameTa/notesTa) make the shop understandable to Tamil
+    // shoppers; photoUrl lets the owner paste any image link from /admin.
     products: defineTable({
-      name: v.string(), // product name, e.g. "Rouge Aura Slip Dress"
-      brand: v.string(), // boutique house label, e.g. "Anouk", "Sereia"
-      category: categoryValidator, // women | men | kids
-      subcategory: v.string(), // e.g. "Dresses", "Tees", "Sherwanis"
+      name: v.string(), // product name (English)
+      nameTa: v.optional(v.string()), // product name (Tamil)
+      brand: v.string(), // boutique house label
+      category: categoryValidator, // kurtas | sarees | sets | dresses
+      subcategory: v.string(), // e.g. "Cotton Kurtas", "Banarasi"
       price: v.number(), // selling price in whole rupees
-      mrp: v.number(), // list price; price < mrp renders the strike-through + % off
+      mrp: v.number(), // list price; price < mrp renders the strike-through
       rating: v.number(), // 3.5–5.0
       ratingCount: v.number(), // number of ratings/reviews
       colors: v.array(v.string()), // color names, e.g. ["Maroon", "Black"]
-      sizes: v.array(v.string()), // apparel sizes, e.g. ["S", "M", "L", "XL", "XXL"]
-      tags: v.array(v.string()), // merchandising tags: "new", "bestseller", "trending"
-      photoId: v.optional(v.string()), // Unsplash photo id for the product image
-      notes: v.string(), // short merchandising line used on cards/PDPs
-      active: v.optional(v.boolean()), // defaults to true when omitted
+      sizes: v.array(v.string()), // apparel sizes, e.g. ["S", "M", "L"]
+      tags: v.array(v.string()), // merchandising tags: "new", "bestseller"
+      photoId: v.optional(v.string()), // Unsplash photo id
+      photoUrl: v.optional(v.string()), // any image URL pasted by the owner
+      notes: v.string(), // short description (English)
+      notesTa: v.optional(v.string()), // short description (Tamil)
+      active: v.optional(v.boolean()), // hidden from storefront when false
     })
       .index("by_category", ["category"])
       .index("by_subcategory", ["subcategory"]),
+
+    // Single-row shop settings, editable by the owner from /admin.
+    // Holds order contact numbers, the local-delivery messaging shown across
+    // the storefront (English + Tamil) and the owner passcode.
+    settings: defineTable({
+      whatsappNumber: v.string(), // digits only, with country code
+      phoneDisplay: v.string(), // how the number is shown to shoppers
+      announcementEn: v.string(), // top-strip announcement (English)
+      announcementTa: v.string(), // top-strip announcement (Tamil)
+      deliveryInfoEn: v.string(), // local delivery info (English)
+      deliveryInfoTa: v.string(), // local delivery info (Tamil)
+      freeDeliveryAbove: v.number(), // rupees; 0 = no free-delivery threshold
+      passcode: v.string(), // owner passcode for /admin actions
+    }),
 
     // tableName: defineTable({
     //   ...
