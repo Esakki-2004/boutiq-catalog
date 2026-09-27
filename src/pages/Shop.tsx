@@ -1,6 +1,7 @@
 import { ProductCard } from "@/components/ProductCard";
 import { StoreHeader } from "@/components/StoreHeader";
 import { StoreFooter } from "@/components/StoreFooter";
+import { FloatingWhatsApp } from "@/components/OrderButtons";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -416,6 +417,7 @@ export default function Shop() {
       </main>
 
       <StoreFooter />
+      <FloatingWhatsApp />
 
       {/* Mobile filter drawer */}
       {mobileFiltersOpen && (

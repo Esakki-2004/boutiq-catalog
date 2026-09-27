@@ -1,3 +1,4 @@
+import { FloatingWhatsApp } from "@/components/OrderButtons";
 import { Link } from "react-router";
 
 export default function NotFound() {
@@ -17,6 +18,7 @@ export default function NotFound() {
       >
         Continue shopping
       </Link>
+      <FloatingWhatsApp />
     </div>
   );
 }

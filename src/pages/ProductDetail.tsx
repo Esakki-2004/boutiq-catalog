@@ -1,7 +1,9 @@
 import { ProductPhoto } from "@/components/ProductPhoto";
 import { ProductCard } from "@/components/ProductCard";
+import { OrderButtons, FloatingWhatsApp } from "@/components/OrderButtons";
 import { StoreHeader } from "@/components/StoreHeader";
 import { StoreFooter } from "@/components/StoreFooter";
+import { BOUTIQ_CONTACT } from "@/lib/contact";
 import { api } from "@/convex/_generated/api";
 import type { Doc, Id } from "@/convex/_generated/dataModel";
 import { cn } from "@/lib/utils";
@@ -218,24 +220,25 @@ export default function ProductDetail() {
               </div>
             )}
 
-            {/* CTAs */}
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <button
-                className="sheen bg-gold-gradient flex-1 py-4 font-body text-sm font-semibold uppercase tracking-[0.18em] text-maroon-deep shadow-[0_10px_30px_rgba(185,138,47,0.3)] transition-transform hover:-translate-y-0.5"
-                title="Cart and checkout arrive in a future version"
-              >
-                Add to Bag
-              </button>
-              <button
-                className="flex-1 border border-maroon py-4 font-body text-sm font-medium uppercase tracking-[0.18em] text-maroon transition-colors hover:bg-maroon hover:text-primary-foreground"
-                title="Cart and checkout arrive in a future version"
-              >
-                Buy Now
-              </button>
+            {/* Special order CTAs — WhatsApp message or phone call */}
+            <div className="mt-8">
+              <OrderButtons
+                name={product.name}
+                brand={product.brand}
+                price={product.price}
+                size={size}
+                color={color ?? product.colors[0]}
+              />
+              <p className="mt-3 flex items-start gap-2 font-body text-xs leading-5 text-muted-foreground">
+                <span className="mt-[7px] size-1 shrink-0 rounded-full bg-gold" />
+                To order, message us on WhatsApp or call — we confirm size,
+                fabric and delivery personally. Replies within the day
+                ({BOUTIQ_CONTACT.whatsappHours}).
+                {size === null &&
+                  product.sizes.length > 1 &&
+                  " Pick a size and it's added to your message."}
+              </p>
             </div>
-            <p className="mt-2 font-body text-xs text-muted-foreground">
-              Cart &amp; checkout are planned for the next version of Boutiq.
-            </p>
 
             {/* Perks */}
             <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-3 border-t border-line pt-6 sm:grid-cols-3">
@@ -290,6 +293,7 @@ export default function ProductDetail() {
       </main>
 
       <StoreFooter />
+      <FloatingWhatsApp />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { ProductCard } from "@/components/ProductCard";
 import { StoreHeader } from "@/components/StoreHeader";
 import { StoreFooter } from "@/components/StoreFooter";
+import { FloatingWhatsApp } from "@/components/OrderButtons";
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
 import { Link } from "react-router";
@@ -349,6 +350,7 @@ export default function Landing() {
       </main>
 
       <StoreFooter />
+      <FloatingWhatsApp />
     </div>
   );
 }
