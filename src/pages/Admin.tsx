@@ -47,6 +47,7 @@ export default function Admin() {
   const showProduct = useMutation(api.settings.showProduct);
   const deleteProduct = useMutation(api.settings.deleteProduct);
   const updateSettings = useMutation(api.settings.update);
+  const seedIfEmpty = useMutation(api.products.seedIfEmpty);
 
   const settings = useQuery(api.settings.get, {});
   const products = useQuery(api.products.adminList, {});
@@ -189,6 +190,21 @@ export default function Admin() {
       setToast("Product deleted ✓");
     } catch (err) {
       setToast(err instanceof Error ? err.message : "Delete failed");
+    }
+  }
+
+  async function handleSeedSamples() {
+    const pc = sessionStorage.getItem("nool-admin");
+    if (!pc) return;
+    try {
+      const r = await seedIfEmpty({ passcode: pc });
+      setToast(
+        r.skipped
+          ? "Catalogue is not empty — nothing was added."
+          : `Added ${r.seeded} sample products ✓`,
+      );
+    } catch (err) {
+      setToast(err instanceof Error ? err.message : "Seed failed");
     }
   }
 
@@ -372,11 +388,21 @@ export default function Admin() {
 
         {tab === "manage" && (
           <div className="border border-line bg-card shadow-btq">
-            <div className="flex items-center justify-between border-b border-line px-6 py-4">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line px-6 py-4">
               <h2 className="font-display text-xl text-ink">Your products</h2>
-              <p className="font-body text-sm text-muted-foreground">
-                {products ? `${products.length} total` : "Loading…"}
-              </p>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={handleSeedSamples}
+                  className="border border-line px-3 py-1.5 font-body text-xs font-medium text-ink hover:border-maroon hover:text-maroon"
+                  title="Fills the shop with 16 sample pieces (only when the catalogue is empty)"
+                >
+                  Load sample products
+                </button>
+                <p className="font-body text-sm text-muted-foreground">
+                  {products ? `${products.length} total` : "Loading…"}
+                </p>
+              </div>
             </div>
             {products === undefined ? (
               <p className="px-6 py-8 font-body text-sm text-muted-foreground">

@@ -23,6 +23,31 @@ export const seed = internalMutation({
   },
 });
 
+/**
+ * Seed sample products into an EMPTY catalogue only (passcode). Used by the
+ * owner from /admin on a fresh production deployment. Never overwrites
+ * existing products, so real shop data is safe.
+ */
+export const seedIfEmpty = mutation({
+  args: { passcode: v.string() },
+  handler: async (ctx, args) => {
+    const current = await getOrCreateSettings(ctx);
+    if (args.passcode !== current.passcode) {
+      throw new Error("Wrong passcode");
+    }
+    const existing = await ctx.db.query("products").first();
+    if (existing !== null) {
+      return { seeded: 0, skipped: true as const };
+    }
+    let count = 0;
+    for (const p of SEED_PRODUCTS) {
+      await ctx.db.insert("products", { ...p, active: true });
+      count += 1;
+    }
+    return { seeded: count, skipped: false as const };
+  },
+});
+
 /** Owner re-seed: wipes and re-inserts the 16 sample pieces (passcode). */
 export const reseed = mutation({
   args: { passcode: v.string() },
