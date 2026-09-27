@@ -9,7 +9,7 @@ function Wordmark() {
   return (
     <span className="flex items-baseline gap-1.5">
       <span className="font-display text-3xl font-semibold tracking-wide text-maroon">
-        Boutiq
+        Nool
       </span>
       <span className="hidden text-[10px] font-medium uppercase tracking-[0.3em] text-gold sm:inline">
         Est. 2024
@@ -19,7 +19,7 @@ function Wordmark() {
 }
 
 /**
- * Boutique masthead — live announcement strip in the shopper's language,
+ * Noolue masthead — live announcement strip in the shopper's language,
  * language toggle, category nav, phone link. No sign-in: shoppers simply
  * browse and order by WhatsApp or call.
  */
@@ -54,7 +54,7 @@ export function StoreHeader() {
 
       <div className="border-b border-line bg-card/95 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 lg:px-8">
-          <Link to="/" aria-label="Boutiq home" className="shrink-0">
+          <Link to="/" aria-label="Nool home" className="shrink-0">
             <Wordmark />
           </Link>
 

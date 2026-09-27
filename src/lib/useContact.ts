@@ -39,7 +39,7 @@ export function waLink(whatsappNumber: string, message: string) {
 
 const MSG = {
   intro: {
-    en: "Namaste Boutiq! I would like to order:",
+    en: "Namaste Nool! I would like to order:",
     ta: "வணக்கம் பூட்டிக்! நான் ஆர்டர் செய்ய விரும்புகிறேன்:",
   },
   piece: { en: "Piece", ta: "பொருள்" },
@@ -48,7 +48,7 @@ const MSG = {
   colour: { en: "Colour", ta: "நிறம்" },
   price: { en: "Price", ta: "விலை" },
   general: {
-    en: "Namaste Boutiq! I would like to place an order — please guide me.",
+    en: "Namaste Nool! I would like to place an order — please guide me.",
     ta: "வணக்கம் பூட்டிக்! நான் ஆர்டர் செய்ய விரும்புகிறேன் — வழிகாட்டுங்கள்.",
   },
 } as const;

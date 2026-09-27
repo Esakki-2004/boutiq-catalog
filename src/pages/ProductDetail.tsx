@@ -97,7 +97,7 @@ export default function ProductDetail() {
           aria-label="Breadcrumb"
           className="flex flex-wrap items-center gap-1 font-body text-xs text-muted-foreground"
         >
-          <Link to="/" className="hover:text-maroon">Boutiq</Link>
+          <Link to="/" className="hover:text-maroon">Nool</Link>
           <ChevronRight className="size-3" />
           <Link
             to={`/shop?category=${product.category}`}

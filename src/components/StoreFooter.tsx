@@ -3,7 +3,7 @@ import { useLang } from "@/lib/i18n";
 import { Link } from "react-router";
 
 /**
- * Boutique footer — deep maroon with gold trim, bilingual labels, live order
+ * Noolue footer — deep maroon with gold trim, bilingual labels, live order
  * contact points from shop settings, and the discreet owner link to /admin.
  */
 export function StoreFooter() {
@@ -40,7 +40,7 @@ export function StoreFooter() {
         <div className="grid gap-10 lg:grid-cols-5">
           <div className="lg:col-span-2">
             <p className="font-display text-3xl font-semibold text-[#faf7f2]">
-              Boutiq
+              Nool
             </p>
             <p className="mt-3 max-w-xs font-body text-sm leading-6 text-[#f0e6d8]/75">
               {t("footerAbout")}
@@ -110,7 +110,7 @@ export function StoreFooter() {
       </div>
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 py-5 font-body text-xs text-[#f0e6d8]/60 sm:flex-row lg:px-8">
-          <span>© 2024–2026 Boutiq</span>
+          <span>© 2024–2026 Nool</span>
           <span>{t("footerCrafted")}</span>
         </div>
       </div>

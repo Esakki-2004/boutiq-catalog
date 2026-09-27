@@ -8,7 +8,7 @@ function formatINR(value: number) {
 }
 
 /**
- * Boutique product card — tall flat imagery, serif product name in the
+ * Noolue product card — tall flat imagery, serif product name in the
  * shopper's language (Tamil falls back to English when the owner hasn't
  * filled it in), quiet price line, gold frame.
  */

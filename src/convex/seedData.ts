@@ -24,7 +24,7 @@ export const SEED_PART1: ProductSeed[] = [
   {
     name: "Rani Handblock Cotton Kurta",
     nameTa: "ராணி கைத்தட்டு பருத்தி குர்தா",
-    brand: "Boutiq Studio",
+    brand: "Nool Studio",
     category: "kurtas",
     subcategory: "Cotton Kurtas",
     price: 1690,
@@ -41,7 +41,7 @@ export const SEED_PART1: ProductSeed[] = [
   {
     name: "Meenakari Chanderi Kurta",
     nameTa: "மீனாகாரி சாந்தேரி குர்தா",
-    brand: "Boutiq Studio",
+    brand: "Nool Studio",
     category: "kurtas",
     subcategory: "Silk Kurtas",
     price: 2890,
@@ -126,7 +126,7 @@ export const SEED_PART1: ProductSeed[] = [
   {
     name: "Chanderi Everyday Saree",
     nameTa: "சாந்தேரி தினசரி சேலை",
-    brand: "Boutiq Studio",
+    brand: "Nool Studio",
     category: "sarees",
     subcategory: "Chanderi",
     price: 3890,
@@ -164,7 +164,7 @@ export const SEED_PART2: ProductSeed[] = [
   {
     name: "Zohra Co-ord Kurta Set",
     nameTa: "சோஹ்ரா இணை குர்தா அமைப்பு",
-    brand: "Boutiq Studio",
+    brand: "Nool Studio",
     category: "sets",
     subcategory: "Kurta Sets",
     price: 3990,
@@ -215,7 +215,7 @@ export const SEED_PART2: ProductSeed[] = [
   {
     name: "Ila Cotton Lounge Set",
     nameTa: "இளா பருத்தி லவுஞ்ச் அமைப்பு",
-    brand: "Boutiq Studio",
+    brand: "Nool Studio",
     category: "sets",
     subcategory: "Lounge Sets",
     price: 2190,
@@ -249,7 +249,7 @@ export const SEED_PART2: ProductSeed[] = [
   {
     name: "Falak Indigo Midi Dress",
     nameTa: "ஃபாலக் இன்டிகோ மிடி கவுன்",
-    brand: "Boutiq Studio",
+    brand: "Nool Studio",
     category: "dresses",
     subcategory: "Midi",
     price: 2790,

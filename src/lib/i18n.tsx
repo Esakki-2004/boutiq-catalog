@@ -10,7 +10,7 @@ import {
 export type Lang = "en" | "ta";
 
 /**
- * Boutique dictionary. Tamil comes first in the shop owner's local area, so
+ * Noolue dictionary. Tamil comes first in the shop owner's local area, so
  * the site defaults to Tamil; English is one tap away.
  */
 const DICT = {
@@ -56,7 +56,7 @@ const DICT = {
   lovedEyebrow: { en: "Customer Favourites", ta: "வாடிக்கையாளர் விருப்பம்" },
   lovedTitle: { en: "Most loved", ta: "அதிகம் விரும்பியவை" },
   viewAll: { en: "View all", ta: "அனைத்தையும் பார்க்க" },
-  letterEyebrow: { en: "The Boutiq Letter", ta: "பூட்டிக் கடிதம்" },
+  letterEyebrow: { en: "The Nool Letter", ta: "நூல் கடிதம்" },
   letterTitle: { en: "First to know, first to wear", ta: "முதலில் அறிந்து, முதலில் அணியுங்கள்" },
   letterBody: {
     en: "New pieces, fabric stories and private previews — once a fortnight, never more.",
@@ -66,7 +66,7 @@ const DICT = {
   subscribe: { en: "Subscribe", ta: "பதிவு செய்யுங்கள்" },
 
   // Shop
-  shopEyebrow: { en: "Boutiq Atelier", ta: "பூட்டிக் கடை" },
+  shopEyebrow: { en: "Nool Atelier", ta: "நூல் கடை" },
   refine: { en: "Refine", ta: "வடிகட்டு" },
   clearAll: { en: "Clear all", ta: "அனைத்தையும் நீக்கு" },
   categories: { en: "Categories", ta: "வகைகள்" },
@@ -127,15 +127,15 @@ const DICT = {
   loadingPiece: { en: "Loading piece…", ta: "பொருள் ஏற்றப்படுகிறது…" },
 
   // Order message
-  orderIntro: { en: "Namaste Boutiq! I would like to order:", ta: "வணக்கம் பூட்டிக்! நான் ஆர்டர் செய்ய விரும்புகிறேன்:" },
+  orderIntro: { en: "Namaste Nool! I would like to order:", ta: "வணக்கம் நூல்! நான் ஆர்டர் செய்ய விரும்புகிறேன்:" },
   orderPiece: { en: "Piece:", ta: "பொருள்:" },
   orderSize: { en: "Size:", ta: "அளவு:" },
   orderSizeChat: { en: "will confirm on chat", ta: "அரட்டையில் உறுதிசெய்வேன்" },
   orderColour: { en: "Colour:", ta: "நிறம்:" },
   orderPrice: { en: "Price:", ta: "விலை:" },
   orderGeneral: {
-    en: "Namaste Boutiq! I would like to place an order — please guide me.",
-    ta: "வணக்கம் பூட்டிக்! நான் ஆர்டர் செய்ய விரும்புகிறேன் — வழிகாட்டுங்கள்.",
+    en: "Namaste Nool! I would like to place an order — please guide me.",
+    ta: "வணக்கம் நூல்! நான் ஆர்டர் செய்ய விரும்புகிறேன் — வழிகாட்டுங்கள்.",
   },
 
   // 404
@@ -181,13 +181,13 @@ const LangContext = createContext<Ctx | null>(null);
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(() => {
     if (typeof window === "undefined") return "ta";
-    const saved = window.localStorage.getItem("boutiq-lang");
+    const saved = window.localStorage.getItem("nool-lang");
     return saved === "en" || saved === "ta" ? saved : "ta";
   });
 
   const setLang = (l: Lang) => {
     setLangState(l);
-    window.localStorage.setItem("boutiq-lang", l);
+    window.localStorage.setItem("nool-lang", l);
   };
 
   useEffect(() => {

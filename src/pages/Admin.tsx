@@ -110,7 +110,7 @@ export default function Admin() {
     try {
       const r = await verify({ passcode });
       if (r.ok) {
-        sessionStorage.setItem("boutiq-admin", passcode);
+        sessionStorage.setItem("nool-admin", passcode);
         setUnlocked(true);
       } else {
         setGateError("Wrong passcode. Please try again.");
@@ -131,7 +131,7 @@ export default function Admin() {
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault();
-    const pc = sessionStorage.getItem("boutiq-admin");
+    const pc = sessionStorage.getItem("nool-admin");
     if (!pc) return;
     if (!fName.trim() || !fPrice.trim()) {
       setToast("Name and price are required.");
@@ -165,7 +165,7 @@ export default function Admin() {
   }
 
   async function handleToggleActive(p: Product) {
-    const pc = sessionStorage.getItem("boutiq-admin");
+    const pc = sessionStorage.getItem("nool-admin");
     if (!pc) return;
     try {
       if (p.active === false) {
@@ -181,7 +181,7 @@ export default function Admin() {
   }
 
   async function handleDelete(p: Product) {
-    const pc = sessionStorage.getItem("boutiq-admin");
+    const pc = sessionStorage.getItem("nool-admin");
     if (!pc) return;
     if (!window.confirm(`Delete "${p.name}" permanently?`)) return;
     try {
@@ -194,7 +194,7 @@ export default function Admin() {
 
   async function handleSettings(e: React.FormEvent) {
     e.preventDefault();
-    const pc = sessionStorage.getItem("boutiq-admin");
+    const pc = sessionStorage.getItem("nool-admin");
     if (!pc) return;
     try {
       await updateSettings({
@@ -220,7 +220,7 @@ export default function Admin() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-ivory px-4">
         <div className="w-full max-w-sm border border-line bg-card p-8 shadow-btq">
-          <p className="eyebrow text-gold">Boutiq Owner Panel</p>
+          <p className="eyebrow text-gold">Nool Owner Panel</p>
           <h1 className="mt-2 font-display text-3xl font-semibold text-ink">
             Shop Admin
           </h1>
@@ -248,7 +248,7 @@ export default function Admin() {
             </button>
           </form>
           <p className="mt-4 font-body text-xs text-muted-foreground">
-            Default passcode: <span className="font-semibold">boutiq2024</span>{" "}
+            Default passcode: <span className="font-semibold">nool2024</span>{" "}
             — change it in Settings after your first sign-in.
           </p>
           <Link
@@ -268,7 +268,7 @@ export default function Admin() {
       <header className="border-b border-line bg-card">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
           <div>
-            <p className="eyebrow text-gold">Boutiq Owner Panel</p>
+            <p className="eyebrow text-gold">Nool Owner Panel</p>
             <h1 className="font-display text-2xl font-semibold text-ink">
               Shop Admin
             </h1>

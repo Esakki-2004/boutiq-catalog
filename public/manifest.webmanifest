@@ -1,11 +1,11 @@
 {
-  "name": "freebuff.com application",
-  "short_name": "freebuff.com",
-  "description": "freebuff.com application",
+  "name": "Nool — Indian Women's Wear",
+  "short_name": "Nool",
+  "description": "Nool (நூல்) — an elegant boutique for Indian women's wear. Order by WhatsApp or call.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "theme_color": "#7a2e2e",
   "icons": [
     {
       "src": "/logo.svg",

@@ -20,7 +20,7 @@ export const DEFAULT_SETTINGS = {
   deliveryInfoEn: "Free delivery across India · Same-day in the city",
   deliveryInfoTa: "இந்தியா முழுவதும் இலவச டெலிவரி · நகரத்தில் அதே நாள் விநியோகம்",
   freeDeliveryAbove: 2000,
-  passcode: "boutiq2024",
+  passcode: "nool2024",
 };
 
 /** Load the settings row, creating it with defaults on first admin action. */
@@ -114,7 +114,7 @@ export const addProduct = mutation({
     await ctx.db.insert("products", {
       name: p.name,
       nameTa: p.nameTa,
-      brand: p.brand && p.brand.trim() !== "" ? p.brand.trim() : "Boutiq",
+      brand: p.brand && p.brand.trim() !== "" ? p.brand.trim() : "Nool",
       category: p.category,
       subcategory:
         p.subcategory && p.subcategory.trim() !== ""
