@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "(convex codegen --typecheck=disable || echo '[nool] codegen skipped, using committed src/convex/_generated') && tsc -b && vite build",
     "lint": "eslint .",
     "format": "prettier --write .",
     "preview": "vite preview"
