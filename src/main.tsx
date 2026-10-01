@@ -81,7 +81,13 @@ class RootErrorBoundary extends React.Component<
   }
 }
 
-const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
+// Public client URL — baked into the bundle anyway, so a code fallback is safe.
+// Set VITE_CONVEX_URL to override (e.g. after creating a prod Convex deployment).
+const CONVEX_URL =
+  (import.meta.env.VITE_CONVEX_URL as string | undefined) ||
+  "https://handsome-pony-119.convex.cloud";
+
+const convex = new ConvexReactClient(CONVEX_URL);
 
 function RouteSyncer() {
   const location = useLocation();
