@@ -1,3 +1,4 @@
+import { useAction } from "convex/react";
 import {
   buildOrderMessage,
   generalMessage,
@@ -5,6 +6,14 @@ import {
   waLink,
 } from "@/lib/useContact";
 import { useLang } from "@/lib/i18n";
+import { api } from "@/convex/_generated/api";
+
+/** Fire-and-forget: enquiry logging must never block the order link. */
+function logQuietly(p: Promise<unknown>) {
+  p.catch(() => {
+    /* best-effort — failures are ignored (e.g. key not configured yet) */
+  });
+}
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -45,6 +54,21 @@ export function OrderButtons({
   const { whatsappNumber, phoneTel } = useContact();
   const message = buildOrderMessage(lang, { name, nameTa, brand, price, size, color });
 
+  const logEnquiry = useAction(api.mongo.logEnquiry);
+  const log = (source: "whatsapp" | "call") =>
+    logQuietly(
+      logEnquiry({
+        productName: name,
+        nameTa,
+        brand,
+        price,
+        size: size ?? undefined,
+        color: color ?? undefined,
+        lang,
+        source,
+      }),
+    );
+
   return (
     <div className="flex flex-col gap-3 sm:flex-row">
       <a
@@ -52,6 +76,7 @@ export function OrderButtons({
         target="_blank"
         rel="noopener noreferrer"
         aria-label={`Order ${name} on WhatsApp`}
+        onClick={() => log("whatsapp")}
         className="sheen bg-gold-gradient flex flex-1 items-center justify-center gap-2.5 py-4 font-body text-sm font-semibold uppercase tracking-[0.18em] text-maroon-deep shadow-[0_10px_30px_rgba(185,138,47,0.3)] transition-transform hover:-translate-y-0.5"
       >
         <WhatsAppIcon className="size-5" />
@@ -60,6 +85,7 @@ export function OrderButtons({
       <a
         href={phoneTel}
         aria-label="Call to order"
+        onClick={() => log("call")}
         className="flex flex-1 items-center justify-center gap-2.5 border border-maroon py-4 font-body text-sm font-medium uppercase tracking-[0.18em] text-maroon transition-colors hover:bg-maroon hover:text-primary-foreground"
       >
         <PhoneIcon className="size-5" />
@@ -76,6 +102,7 @@ export function OrderButtons({
 export function FloatingWhatsApp() {
   const { lang } = useLang();
   const { whatsappNumber } = useContact();
+  const logEnquiry = useAction(api.mongo.logEnquiry);
 
   return (
     <a
@@ -83,6 +110,11 @@ export function FloatingWhatsApp() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat with the shop on WhatsApp to order"
+      onClick={() =>
+        logQuietly(
+          logEnquiry({ productName: "General enquiry", lang, source: "chat" }),
+        )
+      }
       className="sheen bg-gold-gradient fixed bottom-5 right-5 z-[70] flex items-center gap-2.5 rounded-full py-3.5 pl-5 pr-6 shadow-[0_12px_36px_rgba(74,28,28,0.35)] transition-transform hover:-translate-y-0.5"
     >
       <WhatsAppIcon className="size-6 text-maroon-deep" />

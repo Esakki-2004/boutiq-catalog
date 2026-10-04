@@ -3,6 +3,7 @@ import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
+import { OrdersPanel } from "@/components/OrdersPanel";
 
 type Product = Doc<"products">;
 
@@ -57,7 +58,7 @@ export default function Admin() {
   const [gateError, setGateError] = useState<string | null>(null);
   const [checking, setChecking] = useState(false);
 
-  const [tab, setTab] = useState<"add" | "manage" | "settings">("add");
+  const [tab, setTab] = useState<"add" | "manage" | "orders" | "settings">("add");
   const [toast, setToast] = useState<string | null>(null);
 
   // Add form state
@@ -301,6 +302,7 @@ export default function Admin() {
             [
               ["add", "Add product"],
               ["manage", "Manage products"],
+              ["orders", "Orders"],
               ["settings", "Shop settings"],
             ] as const
           ).map(([id, label]) => (
@@ -321,6 +323,8 @@ export default function Admin() {
       </header>
 
       <main className="mx-auto max-w-5xl px-4 py-8">
+        {tab === "orders" && <OrdersPanel />}
+
         {tab === "add" && (
           <form
             onSubmit={handleAdd}
